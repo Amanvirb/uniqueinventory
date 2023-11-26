@@ -20,7 +20,7 @@ public class Command : IRequest<Result<Unit>>
         {
             var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.LocationName == request.Location.Name,
                 cancellationToken: cancellationToken);
-            if (existingLocation is not null) return Result<Unit>.Failure("Location already exists, Please Add new location Name");
+            if (existingLocation is not null) return Result<Unit>.Failure("Location already exists");
 
             var location = new Location
             {
