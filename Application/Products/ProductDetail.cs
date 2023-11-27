@@ -15,6 +15,7 @@ public class ProductDetail
         public async Task<Result<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var product = await _context.Products
+                .Include(x => x.Location)
                 .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                  .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
             

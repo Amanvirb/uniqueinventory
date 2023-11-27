@@ -14,7 +14,9 @@ public class AddProduct
         {
             bool result;
 
-            var existingProduct = await _context.Products.FirstOrDefaultAsync(x => x.SerialNumber == request.Product.SerialNumber,
+            var existingProduct = await _context.Products
+                .Include(x=>x.Location)
+                .FirstOrDefaultAsync(x => x.SerialNumber == request.Product.SerialNumber,
                 cancellationToken: cancellationToken);
             if (existingProduct is not null)
             {

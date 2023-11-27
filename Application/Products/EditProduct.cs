@@ -4,7 +4,7 @@ public class EditProduct
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public UpdateProductDto updatedProduct { get; set; }
+        public UpdateProductDto UpdatedProduct { get; set; }
     }
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
     {
@@ -14,39 +14,42 @@ public class EditProduct
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == request.updatedProduct.Id,
+            var product = await _context.Products
+                .Include(x=>x.Location)
+                .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id,
                 cancellationToken: cancellationToken);
             if (product is null) return null;
 
-            if (product.Location.LocationName == request.updatedProduct.LocationName && product.PartNumberName == request.updatedProduct.PartNumberName) return null;
+            if (product.Location.LocationName == request.UpdatedProduct.LocationName && product.PartNumberName == request.UpdatedProduct.PartNumberName) return null;
 
-            if (product.Location.LocationName != request.updatedProduct.LocationName)
+
+            if (product.Location.LocationName != request.UpdatedProduct.LocationName)
             {
                 var updatedProduct = new ProductUpdateHistory
                 {
                     SerialNumber = product.SerialNumber,
-                    Location = request.updatedProduct.LocationName,
+                    Location = request.UpdatedProduct.LocationName,
                     PartNumber = product.PartNumberName,
                     DateTime = DateTime.Now,
                 };
 
-                product.Location.LocationName = request.updatedProduct.LocationName;
+                product.Location.LocationName = request.UpdatedProduct.LocationName;
 
                 _context.Entry(product).State = EntityState.Modified;
                 _context.ProductUpdateHistories.Add(updatedProduct);
 
             }
-            if (product.PartNumberName != request.updatedProduct.PartNumberName)
+            if (product.PartNumberName != request.UpdatedProduct.PartNumberName)
             {
                 var updatedProduct = new ProductUpdateHistory
                 {
                     SerialNumber = product.SerialNumber,
                     Location = product.Location.LocationName,
-                    PartNumber = request.updatedProduct.PartNumberName,
+                    PartNumber = request.UpdatedProduct.PartNumberName,
                     DateTime = DateTime.Now,
 
                 };
-                product.PartNumberName = request.updatedProduct.PartNumberName;
+                product.PartNumberName = request.UpdatedProduct.PartNumberName;
 
                 _context.Entry(product).State = EntityState.Modified;
                 _context.ProductUpdateHistories.Add(updatedProduct);

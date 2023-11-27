@@ -1,4 +1,6 @@
 ﻿
+using Application.History;
+
 namespace API.Controllers
 {
     public class ProductController : BaseApiController
@@ -15,17 +17,23 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new ProductList.Query()));
         }
 
-        [HttpGet("id")] //api/GetProductDetail
-        public async Task<IActionResult> GetProductDetail(int Id)
+        [HttpGet("{id}")] //api/GetProductDetail
+        public async Task<IActionResult> GetProductDetail(int id)
         {
-            return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = Id }));
+            return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
         }
 
-        [HttpPut("id")] //api/UpdateProduct
-        public async Task<IActionResult> UpdateProduct(int Id, UpdateProductDto updatedProduct)
+        [HttpGet("productHistory")]  //api/GetProductUpdateHistoryList
+        public async Task<IActionResult> GetProductUpdateHistory()
         {
-            updatedProduct.Id = Id;
-            return HandleResult(await Mediator.Send(new EditProduct.Command { updatedProduct = updatedProduct }));
+            return HandleResult(await Mediator.Send(new GetProductUpdateHistory.Query()));
         }
+
+        [HttpPut] //api/UpdateProduct
+        public async Task<IActionResult> UpdateProduct(UpdateProductDto updatedProduct)
+        {
+            return HandleResult(await Mediator.Send(new EditProduct.Command { UpdatedProduct = updatedProduct }));
+        }
+
     }
 }
