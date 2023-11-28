@@ -17,7 +17,8 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LocationName = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    TotalCapacity = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PartNumberName = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,7 +77,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PartNumberNameId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PartNumberId = table.Column<int>(type: "INTEGER", nullable: false),
                     LocationId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -89,8 +90,8 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_PartNumbers_PartNumberNameId",
-                        column: x => x.PartNumberNameId,
+                        name: "FK_Products_PartNumbers_PartNumberId",
+                        column: x => x.PartNumberId,
                         principalTable: "PartNumbers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -102,9 +103,9 @@ namespace Persistence.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_PartNumberNameId",
+                name: "IX_Products_PartNumberId",
                 table: "Products",
-                column: "PartNumberNameId");
+                column: "PartNumberId");
         }
 
         /// <inheritdoc />

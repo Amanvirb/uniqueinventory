@@ -23,8 +23,11 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("LocationName")
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TotalCapacity")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -37,7 +40,7 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PartNumberName")
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -54,7 +57,7 @@ namespace Persistence.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PartNumberNameId")
+                    b.Property<int>("PartNumberId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SerialNumber")
@@ -64,7 +67,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("PartNumberNameId");
+                    b.HasIndex("PartNumberId");
 
                     b.ToTable("Products");
                 });
@@ -123,15 +126,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.PartNumber", "PartNumberName")
+                    b.HasOne("Domain.PartNumber", "PartNumber")
                         .WithMany("Products")
-                        .HasForeignKey("PartNumberNameId")
+                        .HasForeignKey("PartNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Location");
 
-                    b.Navigation("PartNumberName");
+                    b.Navigation("PartNumber");
                 });
 
             modelBuilder.Entity("Domain.Location", b =>

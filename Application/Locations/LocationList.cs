@@ -10,9 +10,9 @@ public class LocationList
 
             public async Task<Result<List<LocationDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var dblocations = await _context.Locations
-                    .Include(x => x.Products)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                //var dblocations = await _context.Locations
+                //    .Include(x => x.Products)
+                //    .ToListAsync(cancellationToken: cancellationToken);
 
                 var location = await _context.Locations
                     .Include(x => x.Products)

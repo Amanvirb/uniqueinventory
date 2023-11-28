@@ -3,9 +3,9 @@
 namespace Application.Locations;
 public class CreateLocation
 {
-public class Command : IRequest<Result<Unit>>
+    public class Command : IRequest<Result<Unit>>
     {
-        public CommonDto Location { get; set; }
+        public AddLocationDto Location { get; set; }
     }
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
@@ -18,13 +18,14 @@ public class Command : IRequest<Result<Unit>>
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.LocationName == request.Location.Name,
+            var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.Name == request.Location.Name,
                 cancellationToken: cancellationToken);
             if (existingLocation is not null) return Result<Unit>.Failure("Location already exists");
 
             var location = new Location
             {
-                LocationName = request.Location.Name,
+                Name = request.Location.Name,
+                TotalCapacity = request.Location.TotalCapacity,
             };
 
             _context.Locations.Add(location);
