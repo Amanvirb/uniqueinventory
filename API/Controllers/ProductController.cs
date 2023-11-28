@@ -22,13 +22,6 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
         }
-
-        [HttpGet("productHistory")]  //api/GetProductUpdateHistoryList
-        public async Task<IActionResult> GetProductUpdateHistory()
-        {
-            return HandleResult(await Mediator.Send(new GetProductUpdateHistory.Query()));
-        }
-
         [HttpPut] //api/UpdateProduct
         public async Task<IActionResult> UpdateProduct(UpdateProductDto updatedProduct)
         {

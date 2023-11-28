@@ -1,0 +1,28 @@
+﻿
+
+
+namespace Application.History;
+public class GetSerialNumberHistory
+{
+    public class Query : IRequest<Result<List<SerialNumberHistoryDto>>>
+    {
+        public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<SerialNumberHistoryDto>>>
+        {
+            private readonly DataContext _context = context;
+            private readonly IMapper _mapper = mapper;
+
+            public async Task<Result<List<SerialNumberHistoryDto>>> Handle(Query request, CancellationToken cancellationToken)
+            {
+                var serialNumberHistory = await _context.SerialNumberHistories
+               .ProjectTo<SerialNumberHistoryDto>(_mapper.ConfigurationProvider)
+               .Take(100)
+               .ToListAsync();
+
+                if (serialNumberHistory is null) return null;
+
+                return Result<List<SerialNumberHistoryDto>>.Success(serialNumberHistory);
+            }
+        }
+
+    }
+}
