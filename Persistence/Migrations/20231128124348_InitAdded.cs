@@ -76,9 +76,8 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PartNumberName = table.Column<string>(type: "TEXT", nullable: true),
-                    LocationId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PartNumberId = table.Column<int>(type: "INTEGER", nullable: true)
+                    PartNumberNameId = table.Column<int>(type: "INTEGER", nullable: false),
+                    LocationId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,10 +89,11 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_PartNumbers_PartNumberId",
-                        column: x => x.PartNumberId,
+                        name: "FK_Products_PartNumbers_PartNumberNameId",
+                        column: x => x.PartNumberNameId,
                         principalTable: "PartNumbers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -102,9 +102,9 @@ namespace Persistence.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_PartNumberId",
+                name: "IX_Products_PartNumberNameId",
                 table: "Products",
-                column: "PartNumberId");
+                column: "PartNumberNameId");
         }
 
         /// <inheritdoc />
