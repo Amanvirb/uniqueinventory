@@ -1,13 +1,14 @@
-﻿using Application.Locations;
+﻿using Application.Dto;
+using Application.Locations;
 using Domain;
 
 namespace API.Controllers;
 public class LocationController : BaseApiController
 {
     [HttpPost] //api//CreateLocation
-    public async Task<IActionResult> CreateLocation(CommonDto name)
+    public async Task<IActionResult> CreateLocation(AddLocationDto location)
     {
-        return HandleResult(await Mediator.Send(new CreateLocation.Command { Location = name }));
+        return HandleResult(await Mediator.Send(new CreateLocation.Command { Location = location }));
     }
 
     [HttpGet] //api/ GetLocationList
@@ -15,10 +16,10 @@ public class LocationController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new LocationList.Query()));
     }
-    [HttpGet("id")] //api/GetProductDetail
-    public async Task<IActionResult> GetLocationDetail(int Id)
+    [HttpGet("{id}/{partNumberName}")] //api/GetProductDetail
+    public async Task<IActionResult> GetLocationDetail(int id, string partNumberName)
     {
-        return HandleResult(await Mediator.Send(new LocationDetail.Query { Id = Id }));
+        return HandleResult(await Mediator.Send(new LocationDetail.Query { Id = id, PartNumberName = partNumberName }));
     }
 
 }

@@ -18,37 +18,37 @@ public class EditProduct
 
             var product = await _context.Products
                 .Include(x => x.Location)
-                .Include(x => x.PartNumberName)
+                .Include(x => x.PartNumber)
                 .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id,
                 cancellationToken: cancellationToken);
 
             if (product is null) return null;
 
-            if (product.Location.LocationName == request.UpdatedProduct.LocationName 
-                && product.PartNumberName.PartNumberName == request.UpdatedProduct.PartNumberName)
-                return Result<Unit>.Failure("Entered part number and location Name is same as previous"); ;
+            if (product.Location.Name == request.UpdatedProduct.LocationName 
+                && product.PartNumber.Name == request.UpdatedProduct.PartNumberName)
+                return Result<Unit>.Failure("Entered part number and location Name is same as previous"); 
 
             var existingLocation = await _context.Locations
-            .FirstOrDefaultAsync(x => x.LocationName == request.UpdatedProduct.LocationName, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.LocationName, cancellationToken: cancellationToken);
             
             if (existingLocation is null) return null;
 
             var existingPartNumber = await _context.PartNumbers
-                .FirstOrDefaultAsync(x => x.PartNumberName == request.UpdatedProduct.PartNumberName, cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.PartNumberName, cancellationToken: cancellationToken);
 
             if (existingPartNumber is null) return null;
 
             var updatedProduct = new ProductUpdateHistory
             {
                 SerialNumber = product.SerialNumber,
-                Location = product.Location.LocationName != request.UpdatedProduct.LocationName ? existingLocation.LocationName : product.Location.LocationName,
-                PartNumber = product.PartNumberName.PartNumberName!= request.UpdatedProduct.PartNumberName ? existingPartNumber.PartNumberName : product.PartNumberName.PartNumberName,
+                Location = product.Location.Name != request.UpdatedProduct.LocationName ? existingLocation.Name : product.Location.Name,
+                PartNumber = product.PartNumber.Name!= request.UpdatedProduct.PartNumberName ? existingPartNumber.Name : product.PartNumber.Name,
                 DateTime = DateTime.Now,
             };
 
             product.Location = existingLocation;
 
-            product.PartNumberName = existingPartNumber;
+            product.PartNumber = existingPartNumber;
 
             _context.Entry(product).State = EntityState.Modified;
 

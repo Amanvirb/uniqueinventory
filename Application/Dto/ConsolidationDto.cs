@@ -1,5 +1,5 @@
 ﻿namespace Application.Dto;
-public class LocationDto
+public class ConsolidationDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -10,4 +10,5 @@ public class LocationDto
     public string Message { get; set; }
 
     public List<ProductDto> Products { get; set; } = [];
+
 }
