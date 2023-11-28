@@ -54,11 +54,8 @@ namespace Persistence.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("PartNumberId")
+                    b.Property<int>("PartNumberNameId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("PartNumberName")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
                         .HasColumnType("TEXT");
@@ -67,7 +64,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("PartNumberId");
+                    b.HasIndex("PartNumberNameId");
 
                     b.ToTable("Products");
                 });
@@ -126,11 +123,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.PartNumber", null)
+                    b.HasOne("Domain.PartNumber", "PartNumberName")
                         .WithMany("Products")
-                        .HasForeignKey("PartNumberId");
+                        .HasForeignKey("PartNumberNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Location");
+
+                    b.Navigation("PartNumberName");
                 });
 
             modelBuilder.Entity("Domain.Location", b =>
