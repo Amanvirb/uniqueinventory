@@ -24,7 +24,9 @@ public class EditProduct
 
             if (product is null) return null;
 
-            if (product.Location.LocationName == request.UpdatedProduct.LocationName && product.PartNumberName.PartNumberName == request.UpdatedProduct.PartNumberName) return Result<Unit>.Failure("Entered part number and location Name is same as previous"); ;
+            if (product.Location.LocationName == request.UpdatedProduct.LocationName 
+                && product.PartNumberName.PartNumberName == request.UpdatedProduct.PartNumberName)
+                return Result<Unit>.Failure("Entered part number and location Name is same as previous"); ;
 
             var existingLocation = await _context.Locations
             .FirstOrDefaultAsync(x => x.LocationName == request.UpdatedProduct.LocationName, cancellationToken: cancellationToken);
