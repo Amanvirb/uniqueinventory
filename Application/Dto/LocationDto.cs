@@ -9,5 +9,5 @@ public class LocationDto
     public int EmptySpace { get; set; }
     public string Message { get; set; }
 
-    public List<ProductDto> Products { get; set; } = [];
+    public List<ProductDto> Products { get; set; } = new List<ProductDto>();
 }

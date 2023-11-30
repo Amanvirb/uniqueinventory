@@ -43,8 +43,6 @@ public class AddProduct
                 if (!result) return Result<Unit>.Failure("Failed to add Part Number");
             }
 
-           
-
             var existingProduct = await _context.Products
                .Include(x => x.Location)
                .Include(x => x.PartNumber)
@@ -69,6 +67,8 @@ public class AddProduct
                 PartNumber = partNumber,
                 Location = location,
             };
+
+
             _context.Products.Add(dbNewProduct);
 
 
