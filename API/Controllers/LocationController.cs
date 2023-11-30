@@ -16,10 +16,11 @@ public class LocationController : BaseApiController
     {
         return HandleResult(await Mediator.Send(new LocationList.Query()));
     }
-    [HttpGet("{id}/{partNumberName}")] //api/GetProductDetail
-    public async Task<IActionResult> GetLocationDetail(int id, string partNumberName)
+
+    [HttpGet("{name}")] //api/GetProductDetail
+    public async Task<IActionResult> GetLocationDetail(string name)
     {
-        return HandleResult(await Mediator.Send(new LocationDetail.Query { Id = id, PartNumberName = partNumberName }));
+        return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
 }

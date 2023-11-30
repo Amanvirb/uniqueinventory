@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.Locations;
+﻿namespace Application.Locations;
 public class CreateLocation
 {
     public class Command : IRequest<Result<Unit>>
