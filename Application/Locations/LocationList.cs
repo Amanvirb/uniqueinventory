@@ -14,14 +14,14 @@ public class LocationList
                 //    .Include(x => x.Products)
                 //    .ToListAsync(cancellationToken: cancellationToken);
 
-                var location = await _context.Locations
+                var locations = await _context.Locations
                     .Include(x => x.Products)
                     .ProjectTo<LocationDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken: cancellationToken);
 
-                if (location.Count < 0) return null;
+                if (locations.Count < 0) return null;
 
-                return Result<List<LocationDto>>.Success(location);
+                return Result<List<LocationDto>>.Success(locations);
 
             }
         }

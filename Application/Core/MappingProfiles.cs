@@ -13,6 +13,9 @@ public class MappingProfiles : Profile
         CreateMap<Location, CommonDto>()
             .ForMember(d => d.Name, o => o.MapFrom(s => s.Name));
 
+        CreateMap<Location, ConsolidationDto>();
+        CreateMap<PartNumber, PartNumberDto>();
+
         CreateMap<ProductUpdateHistory, ProductUpdateHistoryDto>();
         CreateMap<SerialNumberHistory, SerialNumberHistoryDto>();
     }

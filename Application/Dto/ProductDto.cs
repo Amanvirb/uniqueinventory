@@ -5,4 +5,7 @@ public class ProductDto
     public string SerialNumber { get; set; }
     public string PartNumberName { get; set; }
     public string LocationName { get; set; }
+
+    public int Quantity { get; set; }
+    public bool Status { get; set; } = false;
 }

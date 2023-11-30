@@ -12,6 +12,7 @@ public class AddPartNumber
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             var existingPartNumber = await _context.PartNumbers.FirstOrDefaultAsync(x => x.Name == request.PartNumber.Name);
+           
             if (existingPartNumber is not null) return Result<Unit>.Failure("Part Number already exists");
         
             _context.PartNumbers.Add(request.PartNumber);

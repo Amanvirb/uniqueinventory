@@ -1,47 +1,77 @@
-﻿namespace Application.Consolidations;
+﻿using Application.Core;
+using Application.Extensions;
+using Application.Products;
+using Domain;
+
+namespace Application.Consolidations;
 public class GenerateConsolidations
 {
-    public class Query : IRequest<Result<List<LocationDto>>>
+    public class Query : IRequest<Result<List<ConsolidationDto>>>
     {
-        public int MaxUnit { get; set; }
-        public string PartNumberName { get; set; }
+        public SearchParams SearchParams { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<LocationDto>>>
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ConsolidationDto>>>
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
+        private object x;
 
-
-        public async Task<Result<List<LocationDto>>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<ConsolidationDto>>> Handle(Query request, CancellationToken cancellationToken)
         {
-          
-            var location = await _context.Locations
-                   .Include(x => x.Products)
-                   .ProjectTo<LocationDto>(_mapper.ConfigurationProvider)
-                   .ToListAsync(cancellationToken: cancellationToken);
-          
-            if (location.Count < 0) return null;
+            var dbProducts = await _context.Products
+             .Include(x => x.Location)
+             .Include(x => x.PartNumber)
+             .Where(x => x.PartNumber.Name.Contains(request.SearchParams.PartNumberName)
+                 && x.Location.Products.Count <= request.SearchParams.MaxUnit)
+             .ToListAsync();
 
-            //var partNumber = location.Products.Where(x => x.PartNumberName.Contains(request.PartNumberName));
+            var locations = dbProducts.Select(x => x.Location.Name).Distinct().ToList();
 
-            //var partNumberCount = location.Products.Where(x => x.PartNumberName.Contains(request.PartNumberName)).Count();
+            var output = new List<ConsolidationDto>();
 
-            //var emptySpace = location.TotalCapacity - location.Products.Count;
+            foreach (var location in locations)
+            {
+                var serials = dbProducts
+                    .Where(x => x.Location.Name == location)
+                    .Select((p) => new ConsolidateSerialDto
+                    {
+                        SerialNo = p.SerialNumber
+                    })
+                    .ToList();
+                
+                output.Add(new()
+                {
+                    LocationName = location,
+                    Serials = serials,
+                    PartNumberName = request.SearchParams.PartNumberName,
+                });
 
+            }
 
-            //location = new LocationDto
+            //foreach (var location in locations)
             //{
-            //    Name = location.Name,
-            //    TotalCapacity = location.TotalCapacity,
-            //    TotalProducts = location.Products.Count,
-            //    CountOfEnteredPartNumberProducts = partNumberCount,
-            //    EmptySpace = emptySpace,
-            //    Message = emptySpace < location.TotalCapacity
-            //    ? $"You can place {emptySpace} Products of {request.PartNumberName} part number" : "Space is full",
-            //    Products = location.Products
-            //};
 
-            return Result<List<LocationDto>>.Success(location);
+            //    var serials = new List<ConsolidateSerialDto>();
+
+            //    var selectedProducts = dbProducts.Where(x => x.Location.Name == location).ToList();
+
+            //    foreach (var serial in selectedProducts)
+            //    {
+            //        serials.Add(new()
+            //        {
+            //            SerialNo = serial.SerialNumber,
+
+            //        });
+            //    }
+            //    output.Add(new()
+            //    {
+            //        LocationName = location,
+            //        Serials = serials,
+            //        PartNumberName = selectedProducts.First().PartNumber.Name,
+            //    });
+
+            //}
+            return Result<List<ConsolidationDto>>.Success(output);
 
         }
     }

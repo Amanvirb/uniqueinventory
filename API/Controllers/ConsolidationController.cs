@@ -5,10 +5,11 @@ namespace API.Controllers
 {
     public class ConsolidationController : BaseApiController
     {
-        [HttpGet("{maxUnit}/{partNumberName}")] //api/GetProductDetail
-        public async Task<IActionResult> GetLocationDetail(int maxUnit, string partNumberName)
+        [HttpGet] //api/GetConsolidatedLocations
+        public async Task<IActionResult> GetConsolidatedLocations([FromQuery] SearchParams searchParams)
         {
-            return HandleResult(await Mediator.Send(new GenerateConsolidations.Query { MaxUnit = maxUnit, PartNumberName = partNumberName }));
+            return HandleResult(await Mediator.Send(new GenerateConsolidations.Query
+            { SearchParams = searchParams }));
         }
     }
 }
