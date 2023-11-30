@@ -24,6 +24,12 @@ public class GeneratePickConsolidations
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
              .ToListAsync();
 
+            //var dbProductsTest = await _context.Locations
+            //.Include(x => x.Products)
+            //.Where(x => x.Name.StartsWith("L") && x.Products.Any(p => p.SerialNumber.Contains("seriala")))
+            //    .ToListAsync();
+
+
             var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
 
             var output = new List<ConsolidationPickDto>();
