@@ -4,6 +4,5 @@
     {
         public string PartNumberName { get; set; }
         public int MaxUnit { get; set; }
-      
     }
 }

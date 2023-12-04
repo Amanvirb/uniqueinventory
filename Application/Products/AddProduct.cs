@@ -22,7 +22,7 @@ public class AddProduct
             {
                 location = new Location
                 {
-                    Name = newProduct.LocationName,
+                    Name = newProduct.LocationName.Trim().ToUpper(),
                 };
                 _context.Locations.Add(location);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
@@ -36,7 +36,7 @@ public class AddProduct
             {
                 partNumber = new PartNumber
                 {
-                    Name = newProduct.PartNumberName,
+                    Name = newProduct.PartNumberName.Trim().ToUpper(),
                 };
                 _context.PartNumbers.Add(partNumber);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
@@ -53,9 +53,9 @@ public class AddProduct
             {
                 var previousProduct = new SerialNumberHistory
                 {
-                    SerialNumber = existingProduct.SerialNumber,
-                    LocationName = existingProduct.Location.Name,
-                    PartNumberName = existingProduct.PartNumber.Name,
+                    SerialNumber = existingProduct.SerialNumber.Trim().ToUpper(),
+                    LocationName = existingProduct.Location.Name.Trim().ToUpper(),
+                    PartNumberName = existingProduct.PartNumber.Name.Trim().ToUpper(),
                     DateTime = DateTime.Now,
                 };
                 _context.SerialNumberHistories.Add(previousProduct);
@@ -63,14 +63,12 @@ public class AddProduct
 
             var dbNewProduct = new Product
             {
-                SerialNumber = request.Product.SerialNumber,
+                SerialNumber = request.Product.SerialNumber.Trim().ToUpper(),
                 PartNumber = partNumber,
                 Location = location,
             };
 
-
             _context.Products.Add(dbNewProduct);
-
 
             result = await _context.SaveChangesAsync(cancellationToken) > 0;
             if (!result) return Result<Unit>.Failure("Failed to add Product");
