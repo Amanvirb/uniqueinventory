@@ -22,7 +22,7 @@ public class CreateLocation
 
             var location = new Location
             {
-                Name = request.Location.Name,
+                Name = request.Location.Name.Trim().ToUpper(),
                 TotalCapacity = request.Location.TotalCapacity,
             };
 

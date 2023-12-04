@@ -41,8 +41,8 @@ public class EditProduct
             var updatedProduct = new ProductUpdateHistory
             {
                 SerialNumber = product.SerialNumber,
-                Location = product.Location.Name != request.UpdatedProduct.LocationName ? existingLocation.Name : product.Location.Name,
-                PartNumber = product.PartNumber.Name!= request.UpdatedProduct.PartNumberName ? existingPartNumber.Name : product.PartNumber.Name,
+                Location = product.Location.Name != request.UpdatedProduct.LocationName.Trim().ToUpper() ? existingLocation.Name : product.Location.Name,
+                PartNumber = product.PartNumber.Name!= request.UpdatedProduct.PartNumberName.Trim().ToUpper() ? existingPartNumber.Name : product.PartNumber.Name,
                 DateTime = DateTime.Now,
             };
 

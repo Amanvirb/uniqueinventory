@@ -15,7 +15,7 @@ public class GeneratePutConsolidations
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
-        private readonly ILogger<GeneratePutConsolidations> _logger = logger;
+        //private readonly ILogger<GeneratePutConsolidations> _logger = logger;
 
         public async Task<Result<List<ConsolidationPutDto>>> Handle(Query request, CancellationToken cancellationToken)
         {
@@ -28,9 +28,9 @@ public class GeneratePutConsolidations
 
             var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
 
-            var testingVar = "TEsting variable";
+            //var testingVar = "TEsting variable";
 
-            _logger.LogInformation(testingVar);
+            //_logger.LogInformation(testingVar);
 
             var output = new List<ConsolidationPutDto>();
 

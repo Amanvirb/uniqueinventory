@@ -15,9 +15,9 @@ public static class ProductExtensions
     {
         if (PartNumberName == null) return query;
 
-        //var lowerCaseSearchTerm = PartNumberName.Trim().ToLower();
+        var lowerCaseSearchTerm = PartNumberName.Trim().ToUpper();
 
-        return query.Where(p => p.Name.Contains(PartNumberName));
+        return query.Where(p => p.Name.Contains(lowerCaseSearchTerm));
 
     }
 
