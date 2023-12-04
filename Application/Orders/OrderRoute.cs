@@ -29,13 +29,9 @@ public class OrderRoute
                   .ToListAsync();
 
                 dbProducts.AddRange(products);
-
             }
 
             var locations = dbProducts.Select(x => x.Location.Name).Distinct().ToList();
-
-            var reqQty = new List<RequestedProductDto>();
-
 
             foreach (var location in locations)
             {
@@ -54,6 +50,7 @@ public class OrderRoute
                         LocationName = location,
                         PartNumber = partNumberName,
                         AvailableQty = partNumbers.Where(x => x.PartNumber.Name == partNumberName).Count(),
+                        ReqQty = request.Order.Where(x => x.PartNumber == partNumberName).Select(x => x.ReqQty).Sum()
                     });
 
 
