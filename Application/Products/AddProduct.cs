@@ -14,15 +14,18 @@ public class AddProduct
         {
             bool result;
             var newProduct = request.Product;
+            newProduct.LocationName = newProduct.LocationName.Trim().ToUpper();
+            newProduct.PartNumberName = newProduct.PartNumberName.Trim().ToUpper();
+            newProduct.SerialNumber = newProduct.SerialNumber.Trim().ToUpper();
 
-              var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName,
-                cancellationToken: cancellationToken);
+            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName,
+              cancellationToken: cancellationToken);
 
             if (location is null)
             {
                 location = new Location
                 {
-                    Name = newProduct.LocationName.Trim().ToUpper(),
+                    Name = newProduct.LocationName,
                 };
                 _context.Locations.Add(location);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
@@ -36,7 +39,7 @@ public class AddProduct
             {
                 partNumber = new PartNumber
                 {
-                    Name = newProduct.PartNumberName.Trim().ToUpper(),
+                    Name = newProduct.PartNumberName,
                 };
                 _context.PartNumbers.Add(partNumber);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
@@ -63,7 +66,7 @@ public class AddProduct
 
             var dbNewProduct = new Product
             {
-                SerialNumber = request.Product.SerialNumber.Trim().ToUpper(),
+                SerialNumber = newProduct.SerialNumber,
                 PartNumber = partNumber,
                 Location = location,
             };

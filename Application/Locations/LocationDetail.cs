@@ -11,12 +11,12 @@ public class LocationDetail
         private readonly IMapper _mapper = mapper;
 
 
-        public async Task<Result<LocationDto>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<LocationDto>> Handle(Query request, CancellationToken ct)
         {
             var location = await _context.Locations
                 .Include(x => x.Products)
                 .ProjectTo<LocationDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Name == request.Name.Trim().ToUpper(), cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(x => x.Name == request.Name.Trim().ToUpper(), ct);
 
             if (location is null) return null;
 

@@ -18,14 +18,14 @@ public class OrderRoute
             List<Product> dbProducts = new();
 
             var output = new List<OrderRouteDto>();
-            var reqProd = new List<RequestedProductDto>();
+
 
             foreach (var partNumber in request.Order)
             {
                 var products = await _context.Products
                   .Include(x => x.Location)
                   .Include(x => x.PartNumber)
-                  .Where(x => x.PartNumber.Name == partNumber.PartNumber)
+                  .Where(x => x.PartNumber.Name == partNumber.PartNumber.Trim().ToUpper())
                   .ToListAsync();
 
                 dbProducts.AddRange(products);
@@ -35,69 +35,40 @@ public class OrderRoute
 
             foreach (var location in locations)
             {
-
-                var partNumbers = dbProducts
+                var products = dbProducts
                      .Where(x => x.Location.Name == location)
                      .ToList();
 
-                var partNumberNames = partNumbers.Select(x => x.PartNumber.Name).Distinct().ToList();
+                var partNumberNames = products.Select(x => x.PartNumber.Name).Distinct().ToList();
+
+                var reqProd = new List<RequestedProductDto>();
 
                 foreach (var partNumberName in partNumberNames)
                 {
 
-                    output.Add(new()
+                    //output.Add(new()
+                    //{
+                    //    LocationName = location,
+                    //    PartNumber = partNumberName,
+                    //    AvailableQty = partNumbers.Where(x => x.PartNumber.Name == partNumberName).Count(),
+                    //    ReqQty = request.Order.Where(x => x.PartNumber == partNumberName).Select(x => x.ReqQty).Sum()
+                    //});
+
+
+                    reqProd.Add(new()
                     {
-                        LocationName = location,
-                        PartNumber = partNumberName,
-                        AvailableQty = partNumbers.Where(x => x.PartNumber.Name == partNumberName).Count(),
+                        PartNumberName = partNumberName,
+                        AvailablePartNumberQuantity = products.Where(x => x.PartNumber.Name == partNumberName).Count(),
                         ReqQty = request.Order.Where(x => x.PartNumber == partNumberName).Select(x => x.ReqQty).Sum()
                     });
-
-
-                    //reqQty.Add(new()
-                    //{
-                    //    PartNumberName = partNumberName,
-                    //    AvailablePartNumberQuantity = partNumbers.Where(x => x.PartNumber.Name == partNumberName).Count(),
-                    //});
                 }
 
-                //output.Add(new()
-                //{
-                //    LocationName = location,
-                //    ReqProducts = reqQty
-                //});
+                output.Add(new()
+                {
+                    LocationName = location,
+                    ReqProducts = reqProd
+                });
             }
-
-            //var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
-
-            //foreach (var location in locations)
-            //{
-
-
-
-            //    foreach(var partNumber in location.Products)
-            //    {
-
-            //    }
-
-
-
-            //   // var partNumbers = dbProducts
-            //   //.Where(x => x.Location == location)
-            //   //.Select((p) => new OrderRouteDto
-            //   //{
-            //   //    PartNumber = p.PartNumber.Name,
-            //   //    LocationName = location.Name,
-            //   //    AvailableQty = location.Products.Count()
-            //   //})
-            //   //.ToList();
-
-            //   // output.AddRange(partNumbers);
-
-            //}
-
-
-
             return Result<List<OrderRouteDto>>.Success(output);
 
         }

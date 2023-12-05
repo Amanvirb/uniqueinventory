@@ -1,5 +1,4 @@
-﻿
-namespace Application.Products;
+﻿namespace Application.Products;
 
 public class ProductDetail
 {
@@ -18,7 +17,7 @@ public class ProductDetail
                 .Include(x => x.Location)
                 .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                  .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
-            
+
             if (product is null) return Result<ProductDto>.Failure("Product not found");
 
             return Result<ProductDto>.Success(product);

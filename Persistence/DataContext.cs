@@ -1,8 +1,10 @@
 ﻿using Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
-public class DataContext(DbContextOptions options) : DbContext(options)
+
+public class DataContext(DbContextOptions<DataContext> options) : IdentityDbContext<AppUser>(options)
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Location> Locations { get; set; }
@@ -16,3 +18,4 @@ public class DataContext(DbContextOptions options) : DbContext(options)
     }
 
 }
+

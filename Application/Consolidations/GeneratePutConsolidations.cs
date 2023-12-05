@@ -11,7 +11,7 @@ public class GeneratePutConsolidations
     {
         public SearchParams SearchParams { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper, ILogger<GeneratePutConsolidations> logger) : IRequestHandler<Query, Result<List<ConsolidationPutDto>>>
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ConsolidationPutDto>>>
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;

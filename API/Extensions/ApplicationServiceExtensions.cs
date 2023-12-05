@@ -15,10 +15,11 @@ public static class ApplicationServiceExtensions
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
-        services.AddDbContext<DataContext>(opt =>
-        {
-            opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
-        });
+        //services.AddDbContext<DataContext>(opt =>
+        //{
+        //    opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+        //});
+       
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddProduct.Handler).Assembly));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
