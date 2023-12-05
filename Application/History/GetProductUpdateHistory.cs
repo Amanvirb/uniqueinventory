@@ -17,7 +17,7 @@ public class GetProductUpdateHistory
         {
             var productHistory = await _context.ProductUpdateHistories
                 .ProjectTo<ProductUpdateHistoryDto>(_mapper.ConfigurationProvider)
-                //.Take(30)
+                .Take(30)
                 .ToListAsync(cancellationToken: cancellationToken);
 
             if (productHistory.Count < 0) return null;

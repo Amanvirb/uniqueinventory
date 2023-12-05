@@ -11,11 +11,9 @@ public class ProductList
             public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var productList = await _context.Products
-                    .Include(x=>x.Location)
+                    .Include(x => x.Location)
                     .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken: cancellationToken);
-                
-                if (productList.Count < 0) return null;
 
                 return Result<List<ProductDto>>.Success(productList);
             }

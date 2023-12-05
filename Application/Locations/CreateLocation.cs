@@ -18,6 +18,7 @@ public class CreateLocation
         {
             var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.Name == request.Location.Name,
                 cancellationToken: cancellationToken);
+
             if (existingLocation is not null) return Result<Unit>.Failure("Location already exists");
 
             var location = new Location
