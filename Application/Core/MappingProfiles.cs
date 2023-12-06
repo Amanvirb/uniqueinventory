@@ -1,3 +1,5 @@
+using Application.Orders;
+
 namespace Application.Core;
 
 public class MappingProfiles : Profile
@@ -14,9 +16,11 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Name, o => o.MapFrom(s => s.Name));
 
         CreateMap<Location, ConsolidationPickDto>();
-        CreateMap<PartNumber, PartNumberDto>();
+        CreateMap<ProductNumber, PartNumberDto>();
 
         CreateMap<ProductUpdateHistory, ProductUpdateHistoryDto>();
         CreateMap<SerialNumberHistory, SerialNumberHistoryDto>();
+
+        CreateMap<CreateOrder, CreateOrderDto>().ReverseMap();
     }
 }

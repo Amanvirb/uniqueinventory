@@ -6,7 +6,7 @@ public class Product
     public string SerialNumber { get; set; }
 
     public int PartNumberId { get; set; }
-    public PartNumber PartNumber { get; set; }
+    public ProductNumber PartNumber { get; set; }
     public int LocationId { get; set; }
     public Location Location { get; set; }
 }

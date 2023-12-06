@@ -32,16 +32,16 @@ public class AddProduct
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            var partNumber = await _context.PartNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.PartNumberName,
+            var partNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.PartNumberName,
                 cancellationToken: cancellationToken);
 
             if (partNumber is null)
             {
-                partNumber = new PartNumber
+                partNumber = new ProductNumber
                 {
                     Name = newProduct.PartNumberName,
                 };
-                _context.PartNumbers.Add(partNumber);
+                _context.ProductNumbers.Add(partNumber);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
                 if (!result) return Result<Unit>.Failure("Failed to add Part Number");
             }
