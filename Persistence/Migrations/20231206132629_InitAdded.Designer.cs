@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231205131658_InitAdded")]
+    [Migration("20231206132629_InitAdded")]
     partial class InitAdded
     {
         /// <inheritdoc />
@@ -101,18 +101,53 @@ namespace Persistence.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("Domain.PartNumber", b =>
+            modelBuilder.Entity("Domain.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("AppUserId")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Confirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Packed")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PartNumbers");
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Domain.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ProductNumberId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductNumberId");
+
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -137,6 +172,20 @@ namespace Persistence.Migrations
                     b.HasIndex("PartNumberId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Domain.ProductNumber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductNumbers");
                 });
 
             modelBuilder.Entity("Domain.ProductUpdateHistory", b =>
@@ -313,6 +362,34 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Order", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Domain.OrderDetail", b =>
+                {
+                    b.HasOne("Domain.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ProductNumber", "ProductNumber")
+                        .WithMany()
+                        .HasForeignKey("ProductNumberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("ProductNumber");
+                });
+
             modelBuilder.Entity("Domain.Product", b =>
                 {
                     b.HasOne("Domain.Location", "Location")
@@ -321,7 +398,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.PartNumber", "PartNumber")
+                    b.HasOne("Domain.ProductNumber", "PartNumber")
                         .WithMany("Products")
                         .HasForeignKey("PartNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -388,7 +465,12 @@ namespace Persistence.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Domain.PartNumber", b =>
+            modelBuilder.Entity("Domain.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("Domain.ProductNumber", b =>
                 {
                     b.Navigation("Products");
                 });

@@ -8,9 +8,13 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Location> Locations { get; set; }
-    public DbSet<PartNumber> PartNumbers { get; set; }
+    public DbSet<ProductNumber> ProductNumbers { get; set; }
     public DbSet<ProductUpdateHistory> ProductUpdateHistories { get; set; }
     public DbSet<SerialNumberHistory> SerialNumberHistories { get; set; }
+
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderDetail> OrderDetails { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

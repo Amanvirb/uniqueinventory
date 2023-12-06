@@ -1,9 +1,9 @@
-﻿namespace Application.PartNumbers;
-public class AddPartNumber
+﻿namespace Application.ProductNumbers;
+public class AddProductNumber
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public PartNumber PartNumber { get; set; }
+        public ProductNumber PartNumber { get; set; }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
@@ -13,17 +13,17 @@ public class AddPartNumber
         {
             var newPartNumber = request.PartNumber.Name.Trim().ToUpper();
 
-            var existingPartNumber = await _context.PartNumbers.FirstOrDefaultAsync(x => x.Name == newPartNumber,
+            var existingPartNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newPartNumber,
                 cancellationToken: cancellationToken);
 
             if (existingPartNumber is not null) return Result<Unit>.Failure("Part Number already exists");
 
-            var partNumber = new PartNumber
+            var partNumber = new ProductNumber
             {
                 Name = newPartNumber,
             };
 
-            _context.PartNumbers.Add(partNumber);
+            _context.ProductNumbers.Add(partNumber);
 
             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
             if (!result) return Result<Unit>.Failure("Cannot Add Part Number");

@@ -37,7 +37,7 @@ public class EditProduct
 
             if (existingLocation is null) return null;
 
-            var existingPartNumber = await _context.PartNumbers
+            var existingPartNumber = await _context.ProductNumbers
                 .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.PartNumberName, cancellationToken: cancellationToken);
 
             if (existingPartNumber is null) return null;
