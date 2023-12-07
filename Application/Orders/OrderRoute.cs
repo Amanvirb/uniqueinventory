@@ -5,25 +5,25 @@ using System.Security.Cryptography.X509Certificates;
 namespace Application.Orders;
 public class OrderRoute
 {
-    public class Query : IRequest<Result<OrderRouteDto>>
+    public class Query : IRequest<Result<List<OrderRouteDto>>>
     {
         public int Id { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<OrderRouteDto>>
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<OrderRouteDto>>>
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<OrderRouteDto>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<OrderRouteDto>>> Handle(Query request, CancellationToken cancellationToken)
         {
 
-            var output = new OrderRouteDto();
-           
+            var output = new List<OrderRouteDto>();
+
             List<Product> orderedProducts = new();
 
             var dbOrder = await _context.Orders
                 //.Include(a=>a.AppUser)
-                .Include(o=>o.OrderDetails)
+                .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductNumber)
                 .FirstOrDefaultAsync(x=>x.Id == request.Id);
             if (dbOrder is null) return null;
             
@@ -31,8 +31,8 @@ public class OrderRoute
             {
                 var products = await _context.Products
                       .Include(x => x.Location)
-                      .Include(x => x.PartNumber)
-                      .Where(x => x.PartNumber == product.ProductNumber)
+                      .Include(x => x.ProductNumber)
+                      .Where(x => x.ProductNumber == product.ProductNumber)
                       .ToListAsync();
 
                 orderedProducts.AddRange(products);
@@ -46,7 +46,7 @@ public class OrderRoute
                      .Where(x => x.Location.Name == location)
                      .ToList();
 
-                var partNumberNames = products.Select(x => x.PartNumber.Name).Distinct().ToList();
+                var partNumberNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
 
                 var reqProd = new List<RequestedProductDto>();
 
@@ -54,21 +54,19 @@ public class OrderRoute
                 {
                     reqProd.Add(new()
                     {
-                        PartNumberName = partNumberName,
-                        AvailablePartNumberQuantity = products.Where(x => x.PartNumber.Name == partNumberName).Count(),
+                        ProductNumberName = partNumberName,
+                        AvailableProductNumberQuantity = products.Where(x => x.ProductNumber.Name == partNumberName).Count(),
                         ReqQty = dbOrder.OrderDetails.Where(x => x.ProductNumber.Name == partNumberName).Select(x => x.Quantity).Sum()
                     });
                 }
 
-                output = new OrderRouteDto
+                output.Add(new()
                 {
                     LocationName = location,
                     ReqProducts = reqProd
-                };
-
-               
+                });
             }
-            return Result<OrderRouteDto>.Success(output);
+            return Result<List<OrderRouteDto>>.Success(output);
         }
     }
 }

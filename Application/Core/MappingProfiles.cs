@@ -8,7 +8,7 @@ public class MappingProfiles : Profile
     {
         CreateMap<Product, ProductDto>()
              .ForMember(d => d.LocationName, o => o.MapFrom(s => s.Location.Name))
-             .ForMember(d => d.PartNumberName, o => o.MapFrom(s => s.PartNumber.Name));
+             .ForMember(d => d.ProductNumberName, o => o.MapFrom(s => s.ProductNumber.Name));
 
         CreateMap<Location, LocationDto>();
 
@@ -16,7 +16,7 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Name, o => o.MapFrom(s => s.Name));
 
         CreateMap<Location, ConsolidationPickDto>();
-        CreateMap<ProductNumber, PartNumberDto>();
+        CreateMap<ProductNumber, ProductNumberDto>();
 
         CreateMap<ProductUpdateHistory, ProductUpdateHistoryDto>();
         CreateMap<SerialNumberHistory, SerialNumberHistoryDto>();

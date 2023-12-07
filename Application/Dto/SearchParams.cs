@@ -2,7 +2,7 @@
 {
     public class SearchParams
     {
-        public string PartNumberName { get; set; }
+        public string ProductNumberName { get; set; }
         public int MaxUnit { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Application.Extensions;
 public static class ProductExtensions
 {
-    public static IQueryable<PartNumberDto> Sort(this IQueryable<PartNumberDto> query, string orderBy)
+    public static IQueryable<ProductNumberDto> Sort(this IQueryable<ProductNumberDto> query, string orderBy)
     {
         if (orderBy == null) return query;
         query = orderBy switch
@@ -11,11 +11,11 @@ public static class ProductExtensions
         };
         return query;
     }
-    public static IQueryable<PartNumberDto> Search(this IQueryable<PartNumberDto> query, string PartNumberName)
+    public static IQueryable<ProductNumberDto> Search(this IQueryable<ProductNumberDto> query, string ProductNumberName)
     {
-        if (PartNumberName == null) return query;
+        if (ProductNumberName == null) return query;
 
-        var lowerCaseSearchTerm = PartNumberName.Trim().ToUpper();
+        var lowerCaseSearchTerm = ProductNumberName.Trim().ToUpper();
 
         return query.Where(p => p.Name.Contains(lowerCaseSearchTerm));
 

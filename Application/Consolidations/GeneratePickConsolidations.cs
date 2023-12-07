@@ -19,8 +19,8 @@ public class GeneratePickConsolidations
         {
             var dbProducts = await _context.Products
              .Include(x => x.Location)
-             .Include(x => x.PartNumber)
-             .Where(x => x.PartNumber.Name.Contains(request.SearchParams.PartNumberName)
+             .Include(x => x.ProductNumber)
+             .Where(x => x.ProductNumber.Name.Contains(request.SearchParams.ProductNumberName)
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
              .ToListAsync();
 
@@ -48,7 +48,7 @@ public class GeneratePickConsolidations
                 {
                     LocationName = location.Name,
                     Serials = serials,
-                    PartNumberName = request.SearchParams.PartNumberName,
+                    ProductNumberName = request.SearchParams.ProductNumberName,
                 });
 
             }
