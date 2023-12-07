@@ -1,10 +1,12 @@
 ﻿
 using Application.History;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     public class ProductController : BaseApiController
     {
+        [Authorize]
         [HttpPost]  //api/AddProduct
         public async Task<IActionResult> AddProduct(ProductDto product)
         {
@@ -22,6 +24,7 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
         }
+        [Authorize]
         [HttpPut] //api/UpdateProduct
         public async Task<IActionResult> UpdateProduct(UpdateProductDto updatedProduct)
         {

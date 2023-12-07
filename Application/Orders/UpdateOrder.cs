@@ -37,6 +37,8 @@ public class UpdateOrder
 
                 foreach (var dbOrderDetail in dbOrder.OrderDetails)
                 {
+                    dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
+                    
                     //updatedOrderDetail.Add(new()
                     //{
                     //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
@@ -44,8 +46,6 @@ public class UpdateOrder
                     //    //Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum(),
                     //    ProductNumber = dbOrderDetail.ProductNumber.Name,
                     //});
-
-                   dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
 
                     //dbOrder.OrderDetails.Add(new()
                     //{

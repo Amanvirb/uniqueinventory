@@ -8,8 +8,8 @@ public class MappingProfiles : Profile
     {
         CreateMap<Product, ProductDto>()
              .ForMember(d => d.LocationName, o => o.MapFrom(s => s.Location.Name))
-             .ForMember(d=> d.PartNumberName, o=>o.MapFrom(s=>s.PartNumber.Name));
-       
+             .ForMember(d => d.PartNumberName, o => o.MapFrom(s => s.PartNumber.Name));
+
         CreateMap<Location, LocationDto>();
 
         CreateMap<Location, CommonDto>()
@@ -21,6 +21,9 @@ public class MappingProfiles : Profile
         CreateMap<ProductUpdateHistory, ProductUpdateHistoryDto>();
         CreateMap<SerialNumberHistory, SerialNumberHistoryDto>();
 
-        CreateMap<CreateOrder, CreateOrderDto>().ReverseMap();
+        CreateMap<Order, CreateOrderDto>();
+        CreateMap<OrderDetail, OrderDetailDto>()
+            .ForMember(d => d.ProductNumber, o => o.MapFrom(s => s.ProductNumber.Name));
+
     }
 }
