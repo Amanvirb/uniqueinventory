@@ -29,10 +29,21 @@ namespace API.Controllers
         }
 
         [HttpGet] //api/GetOrderList
-        
         public async Task<IActionResult> GetOrderList()
         {
             return HandleResult(await Mediator.Send(new OrderList.Query()));
+        }
+
+        [HttpGet("{id}")] //api/GetOrderDetail
+        public async Task<IActionResult> GetOrderDetail(int id)
+        {
+            return HandleResult(await Mediator.Send(new GetOrderDetail.Query { Id = id} ));
+        }
+
+        [HttpDelete("{id}")] //api/GetOrderDetail
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            return HandleResult(await Mediator.Send(new DeleteOrder.Command { Id = id }));
         }
     }
 }
