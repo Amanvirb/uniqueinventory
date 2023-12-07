@@ -156,7 +156,7 @@ namespace Persistence.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PartNumberId")
+                    b.Property<int>("ProductNumberId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SerialNumber")
@@ -166,7 +166,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("PartNumberId");
+                    b.HasIndex("ProductNumberId");
 
                     b.ToTable("Products");
                 });
@@ -197,7 +197,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PartNumber")
+                    b.Property<string>("ProductNumber")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
@@ -220,7 +220,7 @@ namespace Persistence.Migrations
                     b.Property<string>("LocationName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PartNumberName")
+                    b.Property<string>("ProductNumberName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
@@ -395,15 +395,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.ProductNumber", "PartNumber")
+                    b.HasOne("Domain.ProductNumber", "ProductNumber")
                         .WithMany("Products")
-                        .HasForeignKey("PartNumberId")
+                        .HasForeignKey("ProductNumberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Location");
 
-                    b.Navigation("PartNumber");
+                    b.Navigation("ProductNumber");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

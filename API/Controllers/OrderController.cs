@@ -7,14 +7,7 @@ namespace API.Controllers
 {
     public class OrderController : BaseApiController
     {
-        [HttpPost("OrderRoute")] //api/GetOrderRoute
-        public async Task<IActionResult> GetOrderRoute(OrderRoutePayloadDto[] order)
-        {
-            return HandleResult(await Mediator.Send(new OrderRoute.Query
-            { Order = order }));
-        }
-
-        [HttpPost("createOrder")] //api/GetCreateOrder
+       [HttpPost("createOrder")] //api/GetCreateOrder
         public async Task<IActionResult> CreateOrder(CreateOrderDto order)
         {
             return HandleResult(await Mediator.Send(new CreateOrder.Command

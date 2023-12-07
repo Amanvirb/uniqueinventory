@@ -15,7 +15,7 @@ public class AddProduct
             bool result;
             var newProduct = request.Product;
             newProduct.LocationName = newProduct.LocationName.Trim().ToUpper();
-            newProduct.PartNumberName = newProduct.PartNumberName.Trim().ToUpper();
+            newProduct.ProductNumberName = newProduct.ProductNumberName.Trim().ToUpper();
             newProduct.SerialNumber = newProduct.SerialNumber.Trim().ToUpper();
 
             var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName,
@@ -32,14 +32,14 @@ public class AddProduct
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            var partNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.PartNumberName,
+            var partNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.ProductNumberName,
                 cancellationToken: cancellationToken);
 
             if (partNumber is null)
             {
                 partNumber = new ProductNumber
                 {
-                    Name = newProduct.PartNumberName,
+                    Name = newProduct.ProductNumberName,
                 };
                 _context.ProductNumbers.Add(partNumber);
                 result = await _context.SaveChangesAsync(cancellationToken) > 0;
@@ -48,7 +48,7 @@ public class AddProduct
 
             var existingProduct = await _context.Products
                .Include(x => x.Location)
-               .Include(x => x.PartNumber)
+               .Include(x => x.ProductNumber)
                .FirstOrDefaultAsync(x => x.SerialNumber == newProduct.SerialNumber,
                cancellationToken: cancellationToken);
 
@@ -58,7 +58,7 @@ public class AddProduct
                 {
                     SerialNumber = existingProduct.SerialNumber.Trim().ToUpper(),
                     LocationName = existingProduct.Location.Name.Trim().ToUpper(),
-                    PartNumberName = existingProduct.PartNumber.Name.Trim().ToUpper(),
+                    ProductNumberName = existingProduct.ProductNumber.Name.Trim().ToUpper(),
                     DateTime = DateTime.Now,
                 };
                 _context.SerialNumberHistories.Add(previousProduct);
@@ -67,7 +67,7 @@ public class AddProduct
             var dbNewProduct = new Product
             {
                 SerialNumber = newProduct.SerialNumber,
-                PartNumber = partNumber,
+                ProductNumber = partNumber,
                 Location = location,
             };
 

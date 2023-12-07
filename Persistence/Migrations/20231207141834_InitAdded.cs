@@ -85,7 +85,7 @@ namespace Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
                     Location = table.Column<string>(type: "TEXT", nullable: true),
-                    PartNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductNumber = table.Column<string>(type: "TEXT", nullable: true),
                     DateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -100,7 +100,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PartNumberName = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductNumberName = table.Column<string>(type: "TEXT", nullable: true),
                     LocationName = table.Column<string>(type: "TEXT", nullable: true),
                     DateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -243,7 +243,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PartNumberId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProductNumberId = table.Column<int>(type: "INTEGER", nullable: false),
                     LocationId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -256,8 +256,8 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Products_ProductNumbers_PartNumberId",
-                        column: x => x.PartNumberId,
+                        name: "FK_Products_ProductNumbers_ProductNumberId",
+                        column: x => x.ProductNumberId,
                         principalTable: "ProductNumbers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -348,9 +348,9 @@ namespace Persistence.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_PartNumberId",
+                name: "IX_Products_ProductNumberId",
                 table: "Products",
-                column: "PartNumberId");
+                column: "ProductNumberId");
         }
 
         /// <inheritdoc />

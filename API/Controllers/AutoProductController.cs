@@ -45,7 +45,7 @@
                 output.Add(new()
                 {
                     SerialNumber = "SerialNo" + i.ToString(),
-                    PartNumberName = "PartNumber" + rnd.Next(1, 250).ToString(),
+                    ProductNumberName = "ProductNumber" + rnd.Next(1, 250).ToString(),
                     LocationName = "Location" + rnd.Next(1, 100).ToString()
                 });
             }

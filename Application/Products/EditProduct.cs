@@ -18,18 +18,18 @@ public class EditProduct
             var updatedProduct = request.UpdatedProduct;
 
             updatedProduct.LocationName = updatedProduct.LocationName.Trim().ToUpper();
-            updatedProduct.PartNumberName = updatedProduct.PartNumberName.Trim().ToUpper();
+            updatedProduct.ProductNumberName = updatedProduct.ProductNumberName.Trim().ToUpper();
 
             var product = await _context.Products
                 .Include(x => x.Location)
-                .Include(x => x.PartNumber)
+                .Include(x => x.ProductNumber)
                 .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id,
                 cancellationToken: cancellationToken);
 
             if (product is null) return null;
 
             if (product.Location.Name == updatedProduct.LocationName
-                && product.PartNumber.Name == updatedProduct.PartNumberName)
+                && product.ProductNumber.Name == updatedProduct.ProductNumberName)
                 return Result<Unit>.Failure("Entered part number and location Name is same as previous");
 
             var existingLocation = await _context.Locations
@@ -37,22 +37,22 @@ public class EditProduct
 
             if (existingLocation is null) return null;
 
-            var existingPartNumber = await _context.ProductNumbers
-                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.PartNumberName, cancellationToken: cancellationToken);
+            var existingProductNumber = await _context.ProductNumbers
+                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.ProductNumberName, cancellationToken: cancellationToken);
 
-            if (existingPartNumber is null) return null;
+            if (existingProductNumber is null) return null;
 
             var updatedNewProduct = new ProductUpdateHistory
             {
                 SerialNumber = product.SerialNumber,
                 Location = product.Location.Name != updatedProduct.LocationName ? existingLocation.Name : product.Location.Name,
-                PartNumber = product.PartNumber.Name != updatedProduct.PartNumberName ? existingPartNumber.Name : product.PartNumber.Name,
+                ProductNumber = product.ProductNumber.Name != updatedProduct.ProductNumberName ? existingProductNumber.Name : product.ProductNumber.Name,
                 DateTime = DateTime.Now,
             };
 
             product.Location = existingLocation;
 
-            product.PartNumber = existingPartNumber;
+            product.ProductNumber = existingProductNumber;
 
             _context.Entry(product).State = EntityState.Modified;
 

@@ -21,8 +21,8 @@ public class GeneratePutConsolidations
         {
             var dbProducts = await _context.Products
              .Include(x => x.Location)
-             .Include(x => x.PartNumber)
-             .Where(x => x.PartNumber.Name.Contains(request.SearchParams.PartNumberName)
+             .Include(x => x.ProductNumber)
+             .Where(x => x.ProductNumber.Name.Contains(request.SearchParams.ProductNumberName)
               && x.Location.Products.Count >= request.SearchParams.MaxUnit)
              .ToListAsync(cancellationToken: cancellationToken);
 
@@ -51,7 +51,7 @@ public class GeneratePutConsolidations
                 output.Add(new()
                 {
                     Location = location.Name,
-                    EneteredPartNumberTotalCount = dbProducts.Where(x => x.Location == location).Count(),
+                    EneteredProductNumberTotalCount = dbProducts.Where(x => x.Location == location).Count(),
                     EmptySpace = capacity - dbTotalLocationProducts.Count,
                 });
 

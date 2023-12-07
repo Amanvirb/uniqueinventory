@@ -25,7 +25,7 @@ public class UpdateOrder
             var productNumberName = await _context.ProductNumbers
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(p => p.Name == request.Order.OrderDetails
-                .Select(s => s.ProductNumber).First().Trim().ToUpper(), cancellationToken: cancellationToken);
+                .Select(s => s.OrderedProductNumber).First().Trim().ToUpper(), cancellationToken: cancellationToken);
 
             if (productNumberName is null) return null;
 
@@ -37,7 +37,7 @@ public class UpdateOrder
 
                 foreach (var dbOrderDetail in dbOrder.OrderDetails)
                 {
-                    dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
+                    dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.OrderedProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
                     
                     //updatedOrderDetail.Add(new()
                     //{

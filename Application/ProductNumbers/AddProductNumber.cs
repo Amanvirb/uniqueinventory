@@ -3,7 +3,7 @@ public class AddProductNumber
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public ProductNumber PartNumber { get; set; }
+        public ProductNumber ProductNumber { get; set; }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
@@ -11,16 +11,16 @@ public class AddProductNumber
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var newPartNumber = request.PartNumber.Name.Trim().ToUpper();
+            var newProductNumber = request.ProductNumber.Name.Trim().ToUpper();
 
-            var existingPartNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newPartNumber,
+            var existingProductNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProductNumber,
                 cancellationToken: cancellationToken);
 
-            if (existingPartNumber is not null) return Result<Unit>.Failure("Part Number already exists");
+            if (existingProductNumber is not null) return Result<Unit>.Failure("Part Number already exists");
 
             var partNumber = new ProductNumber
             {
-                Name = newPartNumber,
+                Name = newProductNumber,
             };
 
             _context.ProductNumbers.Add(partNumber);
