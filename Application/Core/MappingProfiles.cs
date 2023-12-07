@@ -23,7 +23,7 @@ public class MappingProfiles : Profile
 
         CreateMap<Order, CreateOrderDto>();
         CreateMap<OrderDetail, OrderDetailDto>()
-            .ForMember(d => d.ProductNumber, o => o.MapFrom(s => s.ProductNumber.Name));
+            .ForMember(d => d.OrderedProductNumber, o => o.MapFrom(s => s.ProductNumber.Name));
 
     }
 }
