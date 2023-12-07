@@ -14,18 +14,14 @@ public class UpdateOrder
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             bool result;
-
             var dbOrder = await _context.Orders
-                .Include(a => a.AppUser)
-                .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
-                .FirstOrDefaultAsync(x => x.Id == request.Order.Id
-                //.FirstOrDefaultAsync(x => x.OrderNumber == request.Order.OrderNumber
-                && x.Confirmed == false, cancellationToken: cancellationToken);
+                            .Include(a => a.AppUser)
+                            .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
+                            .FirstOrDefaultAsync(x => x.Id == request.Order.Id);
 
             var productNumberName = await _context.ProductNumbers
                 .Include(x => x.Products)
-                .FirstOrDefaultAsync(p => p.Name == request.Order.OrderDetails
-                .Select(s => s.OrderedProductNumber).First().Trim().ToUpper(), cancellationToken: cancellationToken);
+                .FirstOrDefaultAsync(p => p.Name == request.Order.ProductNumberName);
 
             if (productNumberName is null) return null;
 
@@ -37,8 +33,10 @@ public class UpdateOrder
 
                 foreach (var dbOrderDetail in dbOrder.OrderDetails)
                 {
-                    dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.OrderedProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
-                    
+                    dbOrderDetail.Quantity = request.Order.Quantity;
+
+                    //dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.OrderedProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
+
                     //updatedOrderDetail.Add(new()
                     //{
                     //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
@@ -54,6 +52,7 @@ public class UpdateOrder
                     //});
                     //dbOrderDetail.Quantity = 12;
 
+                    //dbOrder.OrderDetails.Add()
                     _context.Entry(dbOrder).State = EntityState.Modified;
                 }
             }
