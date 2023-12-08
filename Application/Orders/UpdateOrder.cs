@@ -19,7 +19,6 @@ public class UpdateOrder
                 .Include(a => a.AppUser)
                 .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
                 .FirstOrDefaultAsync(x => x.Id == request.Order.Id
-                //.FirstOrDefaultAsync(x => x.OrderNumber == request.Order.OrderNumber.Trim().ToUpper()
                 && x.Confirmed == false, cancellationToken: cancellationToken);
 
             if (dbOrder is null) return null;
