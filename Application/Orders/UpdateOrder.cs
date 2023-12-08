@@ -19,46 +19,35 @@ public class UpdateOrder
                 .Include(a => a.AppUser)
                 .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
                 .FirstOrDefaultAsync(x => x.Id == request.Order.Id
-                //.FirstOrDefaultAsync(x => x.OrderNumber == request.Order.OrderNumber
+                //.FirstOrDefaultAsync(x => x.OrderNumber == request.Order.OrderNumber.Trim().ToUpper()
                 && x.Confirmed == false, cancellationToken: cancellationToken);
 
-            var productNumberName = await _context.ProductNumbers
-                .Include(x => x.Products)
-                .FirstOrDefaultAsync(p => p.Name == request.Order.OrderDetails
-                .Select(s => s.OrderedProductNumber).First().Trim().ToUpper(), cancellationToken: cancellationToken);
+            if (dbOrder is null) return null;
 
-            if (productNumberName is null) return null;
+            var orderDetail = dbOrder.OrderDetails
+                .FirstOrDefault(x => x.ProductNumber.Name == request.Order.ProductName.Trim().ToUpper());
 
-            if (dbOrder is not null)
+            if (orderDetail is null)
             {
-                //var orderId = dbOrder.Id;
-
-                var updatedOrderDetail = new List<OrderDetailDto>();
-
-                foreach (var dbOrderDetail in dbOrder.OrderDetails)
+                var newOrderDetails = new OrderDetail
                 {
-                    dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.OrderedProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
-                    
-                    //updatedOrderDetail.Add(new()
-                    //{
-                    //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
+                    Quantity = request.Order.Quantity,
+                    ProductNumber = new ProductNumber { Name = request.Order.ProductName.Trim().ToUpper() },
+                    Order = dbOrder,
+                };
 
-                    //    //Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum(),
-                    //    ProductNumber = dbOrderDetail.ProductNumber.Name,
-                    //});
+                _context.OrderDetails.Add(newOrderDetails);
+                result = await _context.SaveChangesAsync(cancellationToken) > 0;
 
-                    //dbOrder.OrderDetails.Add(new()
-                    //{
-                    //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
+            }
+            else
+            {
+                orderDetail.Quantity = request.Order.Quantity;
 
-                    //});
-                    //dbOrderDetail.Quantity = 12;
-
-                    _context.Entry(dbOrder).State = EntityState.Modified;
-                }
+                _context.Entry(dbOrder).State = EntityState.Modified;
+                result = await _context.SaveChangesAsync(cancellationToken) > 0;
             }
 
-            result = await _context.SaveChangesAsync(cancellationToken) > 0;
             if (!result) Result<Unit>.Failure("Can not create order");
 
             return Result<Unit>.Success(Unit.Value);
