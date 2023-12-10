@@ -11,54 +11,52 @@ public class UpdateOrder
     {
         private readonly DataContext _context = context;
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            bool result;
-            var dbOrder = await _context.Orders
-                            .Include(a => a.AppUser)
-                            .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
-                            .FirstOrDefaultAsync(x => x.Id == request.Order.Id);
+            var product = request.Order.ProductName.Trim().ToUpper();
 
-            var productNumberName = await _context.ProductNumbers
-                .Include(x => x.Products)
-                .FirstOrDefaultAsync(p => p.Name == request.Order.ProductNumberName);
-
-            if (productNumberName is null) return null;
-
-            if (dbOrder is not null)
+            if (request.Order.Quantity < 1)
             {
-                //var orderId = dbOrder.Id;
+                await _context.OrderDetails
+                    .Where(x => x.OrderId == request.Order.Id && x.ProductNumber.Name == product)
+                    .ExecuteDeleteAsync(ct);
 
-                var updatedOrderDetail = new List<OrderDetailDto>();
-
-                foreach (var dbOrderDetail in dbOrder.OrderDetails)
-                {
-                    dbOrderDetail.Quantity = request.Order.Quantity;
-
-                    //dbOrderDetail.Quantity = request.Order.OrderDetails.Where(o => o.OrderedProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum();
-
-                    //updatedOrderDetail.Add(new()
-                    //{
-                    //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
-
-                    //    //Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == dbOrderDetail.ProductNumber.Name).Select(o => o.Quantity).Sum(),
-                    //    ProductNumber = dbOrderDetail.ProductNumber.Name,
-                    //});
-
-                    //dbOrder.OrderDetails.Add(new()
-                    //{
-                    //    Quantity = request.Order.OrderDetails.Where(o => o.ProductNumber == productNumberName.Name).Select(o => o.Quantity).Sum(),
-
-                    //});
-                    //dbOrderDetail.Quantity = 12;
-
-                    //dbOrder.OrderDetails.Add()
-                    _context.Entry(dbOrder).State = EntityState.Modified;
-                }
+                return Result<Unit>.Success(Unit.Value);
             }
 
-            result = await _context.SaveChangesAsync(cancellationToken) > 0;
-            if (!result) Result<Unit>.Failure("Can not create order");
+            bool result;
+            var dbOrder = await _context.Orders
+                .Include(a => a.AppUser)
+                .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
+                .FirstOrDefaultAsync(x => x.Id == request.Order.Id
+                && x.Confirmed == false, ct);
+
+            if (dbOrder is null) return null;
+
+            var orderDetail = dbOrder.OrderDetails
+                .FirstOrDefault(x => x.ProductNumber.Name == product);
+
+            if (orderDetail is null)
+            {
+                var newOrderDetails = new OrderDetail
+                {
+                    Quantity = request.Order.Quantity,
+                    ProductNumber = new ProductNumber { Name = product },
+                    Order = dbOrder,
+                };
+
+                _context.OrderDetails.Add(newOrderDetails);
+                result = await _context.SaveChangesAsync(ct) > 0;
+
+            }
+            else
+            {
+                result = await _context.OrderDetails
+                      .Where(x => x.Id == orderDetail.Id)
+                      .ExecuteUpdateAsync(x => x.SetProperty(x => x.Quantity, request.Order.Quantity)) > 0;
+            }
+
+            if (!result) Result<Unit>.Failure("Can not update order");
 
             return Result<Unit>.Success(Unit.Value);
         }

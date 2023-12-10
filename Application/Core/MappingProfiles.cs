@@ -22,6 +22,7 @@ public class MappingProfiles : Profile
         CreateMap<SerialNumberHistory, SerialNumberHistoryDto>();
 
         CreateMap<Order, CreateOrderDto>();
+        CreateMap<Order, FullOrderDetailDto>();
         CreateMap<OrderDetail, OrderDetailDto>()
             .ForMember(d => d.OrderedProductNumber, o => o.MapFrom(s => s.ProductNumber.Name));
 

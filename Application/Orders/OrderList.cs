@@ -1,22 +1,22 @@
 ﻿namespace Application.Orders;
 public class OrderList
 {
-    public class Query : IRequest<Result<List<CreateOrderDto>>>
+    public class Query : IRequest<Result<List<FullOrderDetailDto>>>
     {
-        public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<CreateOrderDto>>>
+        public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<FullOrderDetailDto>>>
         {
             private readonly DataContext _context = context;
             private readonly IMapper _mapper = mapper;
 
-            public async Task<Result<List<CreateOrderDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<FullOrderDetailDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var dbOrders = await _context.Orders
                    //.Include(a => a.AppUser)
                    .Include(o => o.OrderDetails)
-                    .ProjectTo<CreateOrderDto>(_mapper.ConfigurationProvider)
+                    .ProjectTo<FullOrderDetailDto>(_mapper.ConfigurationProvider)
                        .ToListAsync(cancellationToken: cancellationToken);
 
-               return Result<List<CreateOrderDto>>.Success(dbOrders);
+               return Result<List<FullOrderDetailDto>>.Success(dbOrders);
 
             }
         }
