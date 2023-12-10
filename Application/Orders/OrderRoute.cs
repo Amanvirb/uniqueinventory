@@ -56,7 +56,7 @@ public class OrderRoute
                     {
                         ProductNumberName = partNumberName,
                         AvailableProductNumberQuantity = products.Where(x => x.ProductNumber.Name == partNumberName).Count(),
-                        ReqQty = dbOrder.OrderDetails.Where(x => x.ProductNumber.Name == partNumberName).Select(x => x.Quantity).Sum()
+                        ReqQty = dbOrder.OrderDetails.FirstOrDefault(x => x.ProductNumber.Name == partNumberName).Quantity
                     });
                 }
 
