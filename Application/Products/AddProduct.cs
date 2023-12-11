@@ -10,7 +10,7 @@ public class AddProduct
     {
         private readonly DataContext _context = context;
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
             bool result;
             var newProduct = request.Product;
@@ -18,8 +18,7 @@ public class AddProduct
             newProduct.ProductNumberName = newProduct.ProductNumberName.Trim().ToUpper();
             newProduct.SerialNumber = newProduct.SerialNumber.Trim().ToUpper();
 
-            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName,
-              cancellationToken: cancellationToken);
+            var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName, ct);
 
             if (location is null)
             {
@@ -28,37 +27,36 @@ public class AddProduct
                     Name = newProduct.LocationName,
                 };
                 _context.Locations.Add(location);
-                result = await _context.SaveChangesAsync(cancellationToken) > 0;
+                result = await _context.SaveChangesAsync(ct) > 0;
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            var partNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.ProductNumberName,
-                cancellationToken: cancellationToken);
+            var productName = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.ProductNumberName,
+               ct);
 
-            if (partNumber is null)
+            if (productName is null)
             {
-                partNumber = new ProductNumber
+                productName = new ProductNumber
                 {
                     Name = newProduct.ProductNumberName,
                 };
-                _context.ProductNumbers.Add(partNumber);
-                result = await _context.SaveChangesAsync(cancellationToken) > 0;
+                _context.ProductNumbers.Add(productName);
+                result = await _context.SaveChangesAsync(ct) > 0;
                 if (!result) return Result<Unit>.Failure("Failed to add Part Number");
             }
 
             var existingProduct = await _context.Products
                .Include(x => x.Location)
                .Include(x => x.ProductNumber)
-               .FirstOrDefaultAsync(x => x.SerialNumber == newProduct.SerialNumber,
-               cancellationToken: cancellationToken);
+               .FirstOrDefaultAsync(x => x.SerialNumber == newProduct.SerialNumber, ct);
 
             if (existingProduct is not null)
             {
                 var previousProduct = new SerialNumberHistory
                 {
-                    SerialNumber = existingProduct.SerialNumber.Trim().ToUpper(),
-                    LocationName = existingProduct.Location.Name.Trim().ToUpper(),
-                    ProductNumberName = existingProduct.ProductNumber.Name.Trim().ToUpper(),
+                    SerialNumber = existingProduct.SerialNumber,
+                    LocationName = existingProduct.Location.Name,
+                    ProductNumberName = existingProduct.ProductNumber.Name,
                     DateTime = DateTime.Now,
                 };
                 _context.SerialNumberHistories.Add(previousProduct);
@@ -67,13 +65,13 @@ public class AddProduct
             var dbNewProduct = new Product
             {
                 SerialNumber = newProduct.SerialNumber,
-                ProductNumber = partNumber,
+                ProductNumber = productName,
                 Location = location,
             };
 
             _context.Products.Add(dbNewProduct);
 
-            result = await _context.SaveChangesAsync(cancellationToken) > 0;
+            result = await _context.SaveChangesAsync(ct) > 0;
             if (!result) return Result<Unit>.Failure("Failed to add Product");
 
             return Result<Unit>.Success(Unit.Value);

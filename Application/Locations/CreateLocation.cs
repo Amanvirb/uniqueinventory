@@ -14,10 +14,9 @@ public class CreateLocation
             _context = context;
         }
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.Name == request.Location.Name,
-                cancellationToken: cancellationToken);
+            var existingLocation = await _context.Locations.FirstOrDefaultAsync(x => x.Name == request.Location.Name, ct);
 
             if (existingLocation is not null) return Result<Unit>.Failure("Location already exists");
 
@@ -29,7 +28,7 @@ public class CreateLocation
 
             _context.Locations.Add(location);
 
-            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+            var result = await _context.SaveChangesAsync(ct) > 0;
             if (!result) Result<Unit>.Failure("Can not create location");
 
             return Result<Unit>.Success(Unit.Value);

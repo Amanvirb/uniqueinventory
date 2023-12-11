@@ -44,5 +44,6 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new DeleteOrderDetail.Command {ProductName = productName, OrderId = id }));
         }
+
     }
 }

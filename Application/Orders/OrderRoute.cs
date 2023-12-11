@@ -14,7 +14,7 @@ public class OrderRoute
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<List<OrderRouteDto>>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<OrderRouteDto>>> Handle(Query request, CancellationToken ct)
         {
 
             var output = new List<OrderRouteDto>();
