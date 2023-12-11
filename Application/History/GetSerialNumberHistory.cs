@@ -11,12 +11,12 @@ public class GetSerialNumberHistory
             private readonly DataContext _context = context;
             private readonly IMapper _mapper = mapper;
 
-            public async Task<Result<List<SerialNumberHistoryDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<SerialNumberHistoryDto>>> Handle(Query request, CancellationToken ct)
             {
                 var serialNumberHistory = await _context.SerialNumberHistories
                .ProjectTo<SerialNumberHistoryDto>(_mapper.ConfigurationProvider)
                .Take(100)
-               .ToListAsync();
+               .ToListAsync(ct);
 
                 if (serialNumberHistory is null) return null;
 

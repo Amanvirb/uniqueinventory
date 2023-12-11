@@ -15,7 +15,7 @@ public class GeneratePickConsolidations
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken ct)
         {
             var dbProducts = await _context.Products
              .Include(x => x.Location)

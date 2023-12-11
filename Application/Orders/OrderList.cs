@@ -8,13 +8,13 @@ public class OrderList
             private readonly DataContext _context = context;
             private readonly IMapper _mapper = mapper;
 
-            public async Task<Result<List<FullOrderDetailDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<FullOrderDetailDto>>> Handle(Query request, CancellationToken ct)
             {
                 var dbOrders = await _context.Orders
                    //.Include(a => a.AppUser)
                    .Include(o => o.OrderDetails)
                     .ProjectTo<FullOrderDetailDto>(_mapper.ConfigurationProvider)
-                       .ToListAsync(cancellationToken: cancellationToken);
+                       .ToListAsync(ct);
 
                return Result<List<FullOrderDetailDto>>.Success(dbOrders);
 

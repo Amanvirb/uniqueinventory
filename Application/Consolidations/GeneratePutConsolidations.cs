@@ -17,14 +17,14 @@ public class GeneratePutConsolidations
         private readonly IMapper _mapper = mapper;
         //private readonly ILogger<GeneratePutConsolidations> _logger = logger;
 
-        public async Task<Result<List<ConsolidationPutDto>>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<ConsolidationPutDto>>> Handle(Query request, CancellationToken ct)
         {
             var dbProducts = await _context.Products
              .Include(x => x.Location)
              .Include(x => x.ProductNumber)
              .Where(x => x.ProductNumber.Name.Contains(request.SearchParams.ProductNumberName)
               && x.Location.Products.Count >= request.SearchParams.MaxUnit)
-             .ToListAsync(cancellationToken: cancellationToken);
+             .ToListAsync(ct);
 
             var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
 
@@ -39,7 +39,7 @@ public class GeneratePutConsolidations
                 var dbTotalLocationProducts = await _context.Products
                     .Include(x => x.Location)
                     .Where(x => x.Location == location)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                    .ToListAsync(ct);
 
                 int capacity = location.TotalCapacity == 0 ? 100 : location.TotalCapacity;
 
@@ -60,15 +60,15 @@ public class GeneratePutConsolidations
             var emptyLocations = await _context.Locations
                 .Include(x => x.Products)
                 .Where(x => x.Products.Count == 0)
-                .Select(l=> new ConsolidationPutDto
+                .Select(l => new ConsolidationPutDto
                 {
-                    Location =l.Name,
+                    Location = l.Name,
                     EmptySpace = l.TotalCapacity,
                 })
-                .ToListAsync(cancellationToken: cancellationToken);
+                .ToListAsync(ct);
 
             output.AddRange(emptyLocations);
-         
+
             //var emptyLocations = await _context.Locations
             //    .Include(x => x.Products)
             //    .Where(x => x.Products.Count == 0)

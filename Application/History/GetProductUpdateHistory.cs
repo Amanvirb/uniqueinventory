@@ -13,17 +13,17 @@ public class GetProductUpdateHistory
         private readonly IMapper _mapper = mapper;
 
 
-        public async Task<Result<List<ProductUpdateHistoryDto>>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<ProductUpdateHistoryDto>>> Handle(Query request, CancellationToken ct)
         {
             var productHistory = await _context.ProductUpdateHistories
                 .ProjectTo<ProductUpdateHistoryDto>(_mapper.ConfigurationProvider)
                 .Take(30)
-                .ToListAsync(cancellationToken: cancellationToken);
+                .ToListAsync(ct);
 
             if (productHistory.Count < 0) return null;
 
             return Result<List<ProductUpdateHistoryDto>>.Success(productHistory);
-         }
+        }
 
     }
 

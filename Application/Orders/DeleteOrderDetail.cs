@@ -14,21 +14,26 @@ public class DeleteOrderDetail
     {
         private DataContext _context = context;
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var dbOrder = await _context.Orders
-                .Include(o => o.AppUser)
-                .Include(x => x.OrderDetails).ThenInclude(p => p.ProductNumber)
-                 .FirstOrDefaultAsync(x => x.Id == request.OrderId, cancellationToken: cancellationToken);
+            //var dbOrder = await _context.Orders
+            //    .Include(o => o.AppUser)
+            //    .Include(x => x.OrderDetails).ThenInclude(p => p.ProductNumber)
+            //     .FirstOrDefaultAsync(x => x.Id == request.OrderId, ct);
 
-            if (dbOrder is null) return Result<Unit>.Failure("Order not found");
+            //if (dbOrder is null) return Result<Unit>.Failure("Order not found");
 
-            var orderDetail = dbOrder.OrderDetails
-                .FirstOrDefault(x => x.ProductNumber.Name == request.ProductName.Trim().ToUpper());
+            //var orderDetail = dbOrder.OrderDetails
+            //    .FirstOrDefault(x => x.ProductNumber.Name == request.ProductName.Trim().ToUpper());
 
-              dbOrder.OrderDetails.Remove(orderDetail);
+            var result = await _context.OrderDetails
+                .Where(x => x.OrderId == request.OrderId
+                && x.ProductNumber.Name == request.ProductName.Trim().ToUpper())
+                .ExecuteDeleteAsync() > 0;
 
-             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
+            //dbOrder.OrderDetails.Remove(orderDetail);
+
+            //var result = await _context.SaveChangesAsync(ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to Delete Product");
             return Result<Unit>.Success(Unit.Value);

@@ -18,12 +18,12 @@ public class AddProductNumber
 
             if (existingProductNumber is not null) return Result<Unit>.Failure("Part Number already exists");
 
-            var partNumber = new ProductNumber
+            var productName = new ProductNumber
             {
                 Name = newProductNumber,
             };
 
-            _context.ProductNumbers.Add(partNumber);
+            _context.ProductNumbers.Add(productName);
 
             var result = await _context.SaveChangesAsync(cancellationToken) > 0;
             if (!result) return Result<Unit>.Failure("Cannot Add Part Number");
