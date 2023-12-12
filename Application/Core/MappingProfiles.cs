@@ -25,6 +25,5 @@ public class MappingProfiles : Profile
         CreateMap<Order, FullOrderDetailDto>();
         CreateMap<OrderDetail, OrderDetailDto>()
             .ForMember(d => d.OrderedProductNumber, o => o.MapFrom(s => s.ProductNumber.Name));
-
     }
 }

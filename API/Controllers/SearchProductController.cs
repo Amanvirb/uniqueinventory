@@ -1,15 +1,14 @@
 ﻿using Application.Orders;
-using Application.Search;
+using Application.ProductSearch;
 
 namespace API.Controllers
 {
     public class SearchProductController : BaseApiController
     {
-
-        [HttpGet("{Name}")] //api/GetSerachedProducts
-        public async Task<IActionResult> GetSearchedProducts(string name)
+        [HttpGet] //api/GetSerachedProducts
+        public async Task<IActionResult> GetSearchedProducts([FromQuery]ProductSearchParams searchParams)
         {
-            return HandleResult(await Mediator.Send(new SearchProduct.Query { Name = name}));
+            return HandleResult(await Mediator.Send(new SearchProduct.Query { Params = searchParams}));
         }
     }
 }
