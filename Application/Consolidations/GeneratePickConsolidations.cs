@@ -17,18 +17,14 @@ public class GeneratePickConsolidations
 
         public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken ct)
         {
+            var productName = request.SearchParams.ProductNumberName.Trim().ToUpper();
+
             var dbProducts = await _context.Products
              .Include(x => x.Location)
              .Include(x => x.ProductNumber)
-             .Where(x => x.ProductNumber.Name.Contains(request.SearchParams.ProductNumberName)
+             .Where(x => x.ProductNumber.Name.Contains(productName)
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
              .ToListAsync();
-
-            //var dbProductsTest = await _context.Locations
-            //.Include(x => x.Products)
-            //.Where(x => x.Name.StartsWith("L") && x.Products.Any(p => p.SerialNumber.Contains("seriala")))
-            //    .ToListAsync();
-
 
             var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
 
@@ -48,7 +44,7 @@ public class GeneratePickConsolidations
                 {
                     LocationName = location.Name,
                     Serials = serials,
-                    ProductNumberName = request.SearchParams.ProductNumberName,
+                    ProductNumberName = productName,
                 });
 
             }

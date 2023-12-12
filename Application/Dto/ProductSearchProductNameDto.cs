@@ -2,6 +2,7 @@
 public class ProductSearchProductNameDto
 {
     public string Location { get; set; }
-    public List<string> SerialNos { get; set; } = new List<string>();
+    public int Quantity { get; set; }
+    public List<ConsolidateSerialDto> SerialNumbers { get; set; } = new List<ConsolidateSerialDto>();
 
 }

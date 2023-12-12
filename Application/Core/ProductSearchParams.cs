@@ -1,6 +1,5 @@
 ﻿namespace Application.Core;
-//public class ProductSearchParams : PagingParams
-public class ProductSearchParams 
+public class ProductSearchParams : PagingParams
 
 {
     public string ProductName { get; set; }

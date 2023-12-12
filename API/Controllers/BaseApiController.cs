@@ -1,3 +1,4 @@
+using API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
@@ -31,8 +32,8 @@ public class BaseApiController : ControllerBase
 
         if (result.IsSuccess && result.Value != null)
         {
-            //Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize,
-            //result.Value.TotalCount, result.Value.TotalPages);
+            Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize,
+            result.Value.TotalCount, result.Value.TotalPages);
             return Ok(result.Value);
         }
         if (result.IsSuccess && result.Value == null)

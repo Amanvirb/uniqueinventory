@@ -11,14 +11,26 @@ public static class ProductExtensions
         };
         return query;
     }
-    public static IQueryable<ProductNumberDto> Search(this IQueryable<ProductNumberDto> query, string ProductNumberName)
+
+    public static IQueryable<Product> Search(this IQueryable<Product> query, ProductSearchParams Params)
     {
-        if (ProductNumberName == null) return query;
+        if (!string.IsNullOrEmpty(Params.SerialNo))
+            query = query.Where(p => p.SerialNumber == Params.SerialNo.Trim().ToUpper());
 
-        var lowerCaseSearchTerm = ProductNumberName.Trim().ToUpper();
+        if (!string.IsNullOrEmpty(Params.ProductName) && !string.IsNullOrEmpty(Params.Location))
+        {
+            query = query.Where(p => p.ProductNumber.Name.Contains(Params.ProductName)
+                        && p.Location.Name == Params.Location);
+            return query;
+        }
+        if (!string.IsNullOrEmpty(Params.ProductName))
+            query = query.Where(p => p.ProductNumber.Name.Contains(Params.ProductName));
 
-        return query.Where(p => p.Name.Contains(lowerCaseSearchTerm));
+        if (!string.IsNullOrEmpty(Params.Location))
+            query = query.Where(p => p.Location.Name == Params.Location);
 
+
+        return query;
     }
 
     //public static IQueryable<BookDetailDto> Filter(this IQueryable<BookDetailDto> query, string brands, string types)
