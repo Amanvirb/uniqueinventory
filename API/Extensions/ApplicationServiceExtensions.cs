@@ -1,6 +1,9 @@
 using Application.Core;
+using Application.Interfaces;
 using Application.Products;
+using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -19,14 +22,20 @@ public static class ApplicationServiceExtensions
         //{
         //    opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
         //});
-       
+
+
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddProduct.Handler).Assembly));
+        //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddProduct.Handler>());
+
+
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-        services.AddFluentValidationAutoValidation();
-        //services.AddValidatorsFromAssemblyContaining<EditCategory>();
+
+        services.AddFluentValidationAutoValidation();        
+        services.AddValidatorsFromAssemblyContaining<AddProduct.CommandValidator>(includeInternalTypes: true);
+
         services.AddHttpContextAccessor();
-        //services.AddScoped<IUserAccessor, UserAccessor>();
+        services.AddScoped<IUserAccessor, UserAccessor>();
 
         return services;
     }

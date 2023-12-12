@@ -11,7 +11,7 @@ public class OrderList
             public async Task<Result<List<FullOrderDetailDto>>> Handle(Query request, CancellationToken ct)
             {
                 var dbOrders = await _context.Orders
-                   //.Include(a => a.AppUser)
+                   .Include(a => a.AppUser)
                    .Include(o => o.OrderDetails)
                     .ProjectTo<FullOrderDetailDto>(_mapper.ConfigurationProvider)
                        .ToListAsync(ct);

@@ -51,7 +51,8 @@ public class SearchProduct
                 searchedProductsName.Add(new()
                 {
                     Location = location,
-                    Quantity = products.Where(x => x.ProductNumber.Name.Contains(param.ProductName)).Count(),
+                    //Quantity = products.Where(x => x.ProductNumber.Name.Contains(param.ProductName)).Count(),
+                    Quantity = products.Count(),
                     SerialNumbers = serials,
                 });
             }

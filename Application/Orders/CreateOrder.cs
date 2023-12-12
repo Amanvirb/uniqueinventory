@@ -1,5 +1,4 @@
-﻿using Domain;
-using Microsoft.AspNetCore.Mvc;
+﻿using Application.Interfaces;
 
 namespace Application.Orders;
 public class CreateOrder
@@ -8,13 +7,17 @@ public class CreateOrder
     {
         public CreateOrderDto Order { get; set; }
     }
-    public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
+    public class Handler(DataContext context, IUserAccessor userAccessor) : IRequestHandler<Command, Result<Unit>>
     {
         private readonly DataContext _context = context;
+        private readonly IUserAccessor _userAccessor = userAccessor;
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
             bool result;
+
+            var user=await _context.Users
+                .FirstOrDefaultAsync(x=>x.UserName==_userAccessor.GetUsername());
 
             var productNumberName = await _context.ProductNumbers
                 .Include(x => x.Products)
@@ -32,7 +35,8 @@ public class CreateOrder
             {
                 Confirmed = false,
                 Packed = false,
-                OrderDetails = new[] { orderDetail }
+                OrderDetails = new[] { orderDetail },
+                AppUser = user
             };
 
             _context.Orders.Add(order);
