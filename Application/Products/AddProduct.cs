@@ -1,10 +1,22 @@
-﻿namespace Application.Products;
+﻿using FluentValidation;
+
+namespace Application.Products;
 
 public class AddProduct
 {
     public class Command : IRequest<Result<Unit>>
     {
         public ProductDto Product { get; set; }
+    }
+
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Product.SerialNumber).NotEmpty();
+            RuleFor(x => x.Product.ProductNumberName).NotEmpty();
+            RuleFor(x => x.Product.LocationName).NotEmpty();
+        }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
