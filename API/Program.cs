@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 using Domain;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
@@ -48,6 +49,8 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

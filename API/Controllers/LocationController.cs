@@ -23,4 +23,10 @@ public class LocationController : BaseApiController
         return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
+    [HttpDelete("{id}")] //api/GetProductDetail
+    public async Task<IActionResult> DeleteLocation(int id)
+    {
+        return HandleResult(await Mediator.Send(new DeleteLocation.Command { Id = id }));
+    }
+
 }

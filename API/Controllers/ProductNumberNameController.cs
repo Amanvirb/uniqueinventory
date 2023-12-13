@@ -24,4 +24,10 @@ public class ProductNumberNameController : BaseApiController
         return HandleResult(await Mediator.Send(new ProductNameDetail.Query { Name = name }));
     }
 
+    [HttpDelete("{id}")] //api/GetProductDetail
+    public async Task<IActionResult> DeleteProductName(int id)
+    {
+        return HandleResult(await Mediator.Send(new  DeleteProductName.Command { Id = id }));
+    }
+
 }
