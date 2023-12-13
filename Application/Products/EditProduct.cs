@@ -1,4 +1,7 @@
-﻿namespace Application.Products;
+﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+
+namespace Application.Products;
 
 public class EditProduct
 {
@@ -6,10 +9,16 @@ public class EditProduct
     {
         public UpdateProductDto UpdatedProduct { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.UpdatedProduct.LocationName).NotEmpty();
+        }
+    }
+    public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
         private DataContext _context = context;
-        private IMapper _mapper = mapper;
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
@@ -18,18 +27,17 @@ public class EditProduct
             var updatedProduct = request.UpdatedProduct;
 
             updatedProduct.LocationName = updatedProduct.LocationName.Trim().ToUpper();
-            updatedProduct.ProductNumberName = updatedProduct.ProductNumberName.Trim().ToUpper();
+            updatedProduct.ProductName = updatedProduct.ProductName.Trim().ToUpper();
 
-            var product = await _context.Products
+            var dbProduct = await _context.Products
                 .Include(x => x.Location)
                 .Include(x => x.ProductNumber)
-                .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id,
-                ct);
+                .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id, ct);
 
-            if (product is null) return null;
+            if (dbProduct is null) return null;
 
-            if (product.Location.Name == updatedProduct.LocationName
-                && product.ProductNumber.Name == updatedProduct.ProductNumberName)
+            if (dbProduct.Location.Name == updatedProduct.LocationName
+                && dbProduct.ProductNumber.Name == updatedProduct.ProductName)
                 return Result<Unit>.Failure("Entered product name and location Name is same as previous");
 
             var existingLocation = await _context.Locations
@@ -38,27 +46,24 @@ public class EditProduct
             if (existingLocation is null) return null;
 
             var existingProductNumber = await _context.ProductNumbers
-                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.ProductNumberName, ct);
+                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.ProductName, ct);
 
             if (existingProductNumber is null) return null;
 
             var updatedNewProduct = new ProductUpdateHistory
             {
-                SerialNumber = product.SerialNumber,
-                Location = product.Location.Name != updatedProduct.LocationName ? existingLocation.Name : product.Location.Name,
-                ProductNumber = product.ProductNumber.Name != updatedProduct.ProductNumberName ? existingProductNumber.Name : product.ProductNumber.Name,
+                SerialNumber = dbProduct.SerialNumber,
+                Location = dbProduct.Location.Name != updatedProduct.LocationName ? existingLocation.Name : dbProduct.Location.Name,
+                ProductNumber = dbProduct.ProductNumber.Name != updatedProduct.ProductName ? existingProductNumber.Name : dbProduct.ProductNumber.Name,
                 DateTime = DateTime.Now,
             };
 
-            product.Location = existingLocation;
+            dbProduct.Location = existingLocation;
 
-            product.ProductNumber = existingProductNumber;
+            dbProduct.ProductNumber = existingProductNumber;
 
-            _context.Entry(product).State = EntityState.Modified;
+            _context.Entry(dbProduct).State = EntityState.Modified;
 
-            //await _context.Products
-            //    .Where(x => x.Id == updatedNewProduct.Id)
-            //    .ExecuteUpdateAsync(x => x.SetProperty(x => x.Location, existingLocation), ct);
 
             _context.ProductUpdateHistories.Add(updatedNewProduct);
 

@@ -15,7 +15,7 @@ public class AddProductNumber
 
             var existingProductNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == name, ct);
 
-            if (existingProductNumber is not null) return Result<Unit>.Failure("Product Number Name already exists");
+            if (existingProductNumber is not null) return Result<Unit>.Failure("Product Name already exists");
 
             _context.ProductNumbers.Add(new ProductNumber { Name = name});
 

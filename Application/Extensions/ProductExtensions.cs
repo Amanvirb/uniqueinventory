@@ -15,12 +15,14 @@ public static class ProductExtensions
     public static IQueryable<Product> Search(this IQueryable<Product> query, ProductSearchParams Params)
     {
         if (!string.IsNullOrEmpty(Params.SerialNo))
+        {
             query = query.Where(p => p.SerialNumber == Params.SerialNo.Trim().ToUpper());
-
+            return query;
+        }
         if (!string.IsNullOrEmpty(Params.ProductName) && !string.IsNullOrEmpty(Params.Location))
         {
             query = query.Where(p => p.ProductNumber.Name.Contains(Params.ProductName)
-                        && p.Location.Name == Params.Location);
+                      && p.Location.Name == Params.Location);
             return query;
         }
         if (!string.IsNullOrEmpty(Params.ProductName))
@@ -28,7 +30,6 @@ public static class ProductExtensions
 
         if (!string.IsNullOrEmpty(Params.Location))
             query = query.Where(p => p.Location.Name == Params.Location);
-
 
         return query;
     }

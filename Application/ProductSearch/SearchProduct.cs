@@ -1,7 +1,4 @@
-﻿using Application.Dto;
-using Application.Extensions;
-using Domain;
-using System.Collections.Immutable;
+﻿using Application.Extensions;
 
 namespace Application.ProductSearch;
 public class SearchProduct
@@ -34,33 +31,34 @@ public class SearchProduct
 
             var products = await query.ToListAsync(ct);
 
-            List<ProductSearchProductNameDto> searchedProductsName = new();
-
-            var locations = products.Select(x => x.Location.Name).Distinct().ToList();
-
-            foreach (var location in locations)
-            {
-                var serials = products
-                    .Where(x => x.Location.Name == location)
-                    .Select((p) => new ConsolidateSerialDto
-                    {
-                        SerialNo = p.SerialNumber
-                    })
-                    .ToList();
-
-                searchedProductsName.Add(new()
-                {
-                    Location = location,
-                    //Quantity = products.Where(x => x.ProductNumber.Name.Contains(param.ProductName)).Count(),
-                    Quantity = products.Count(),
-                    SerialNumbers = serials,
-                });
-            }
-
             var productNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
 
             foreach (var ProductName in productNames)
             {
+                var selectedProducts = products.Where(x => x.ProductNumber.Name == ProductName).ToList();
+
+                var selectedLocations = selectedProducts.Select(x => x.Location.Name).Distinct().ToList();
+               
+                List<ProductSearchProductNameDto> searchedProductsName = new();
+
+                foreach (var location in selectedLocations)
+                {
+                    var serials = selectedProducts
+                        .Where(x => x.Location.Name == location)
+                        .Select((p) => new ConsolidateSerialDto
+                        {
+                            SerialNo = p.SerialNumber
+                        })
+                        .ToList();
+
+                    searchedProductsName.Add(new()
+                    {
+                        Location = location,
+                        Quantity = serials.Count(),
+                        SerialNumbers = serials,
+                    });
+                }
+
                 output.Add(new()
                 {
                     ProductName = ProductName,

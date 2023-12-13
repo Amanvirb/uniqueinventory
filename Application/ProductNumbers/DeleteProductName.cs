@@ -1,5 +1,5 @@
 ﻿namespace Application.Products;
-public class DeleteProduct
+public class DeleteProductName
 {
     public class Command : IRequest<Result<Unit>>
     {
@@ -11,11 +11,11 @@ public class DeleteProduct
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var result = await _context.Products
+            var result = await _context.ProductNumbers
                 .Where(x => x.Id == request.Id)
                 .ExecuteDeleteAsync(ct) > 0;
 
-            if (!result) return Result<Unit>.Failure("Failed to Delete Product");
+            if (!result) return Result<Unit>.Failure("Failed to Delete Product Name");
             return Result<Unit>.Success(Unit.Value);
         }
     }

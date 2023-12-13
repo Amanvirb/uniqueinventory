@@ -4,6 +4,7 @@ using Application.Products;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -31,8 +32,8 @@ public static class ApplicationServiceExtensions
 
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
-        services.AddFluentValidationAutoValidation();        
-        services.AddValidatorsFromAssemblyContaining<AddProduct.CommandValidator>(includeInternalTypes: true);
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssemblyContaining<ProductDetail>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserAccessor, UserAccessor>();

@@ -1,10 +1,19 @@
-﻿namespace Application.Products;
+﻿using FluentValidation;
+
+namespace Application.Products;
 
 public class ProductDetail
 {
     public class Query : IRequest<Result<ProductDto>>
     {
         public int Id { get; set; }
+    }
+    public class CommandValidator : AbstractValidator<Query>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Id).NotEmpty();
+        }
     }
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<ProductDto>>
     {
