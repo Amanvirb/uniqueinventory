@@ -24,10 +24,16 @@ public class ProductNumberNameController : BaseApiController
         return HandleResult(await Mediator.Send(new ProductNameDetail.Query { Name = name }));
     }
 
+    [HttpPut("{id}")] //api/UpdateProductDetail
+    public async Task<IActionResult> UpdateProductNameDetail(CommonDto name, int id)
+    {
+        return HandleResult(await Mediator.Send(new EditProductName.Command { Id = id, ProductName = name }));
+    }
+
     [HttpDelete("{id}")] //api/GetProductDetail
     public async Task<IActionResult> DeleteProductName(int id)
     {
-        return HandleResult(await Mediator.Send(new  DeleteProductName.Command { Id = id }));
+        return HandleResult(await Mediator.Send(new DeleteProductName.Command { Id = id }));
     }
 
 }
