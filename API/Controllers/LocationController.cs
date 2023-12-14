@@ -23,6 +23,12 @@ public class LocationController : BaseApiController
         return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
+    [HttpPut("{id}")] //api/UpdateLocation
+    public async Task<IActionResult> UpdateLocation(CommonDto name, int id)
+    {
+        return HandleResult(await Mediator.Send(new EditLocation.Command {Id = id, Location = name }));
+    }
+
     [HttpDelete("{id}")] //api/GetProductDetail
     public async Task<IActionResult> DeleteLocation(int id)
     {
