@@ -8,8 +8,8 @@ public class GetOrderDetail
     }
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<FullOrderDetailDto>>
     {
-        private DataContext _context = context;
-        private IMapper _mapper = mapper;
+        private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Result<FullOrderDetailDto>> Handle(Query request, CancellationToken ct)
         {

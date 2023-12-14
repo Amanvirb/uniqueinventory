@@ -13,6 +13,7 @@ public class UpdateOrder
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
+            //Remember to add order owner policy
             var product = request.Order.ProductName.Trim().ToUpper();
 
             if (request.Order.Quantity < 1)
@@ -26,7 +27,7 @@ public class UpdateOrder
 
             bool result;
             var dbOrder = await _context.Orders
-                .Include(a => a.AppUser)
+               // .Include(a => a.AppUser)
                 .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
                 .FirstOrDefaultAsync(x => x.Id == request.Order.Id
                 && x.Confirmed == false, ct);
@@ -53,7 +54,7 @@ public class UpdateOrder
             {
                 result = await _context.OrderDetails
                       .Where(x => x.Id == orderDetail.Id)
-                      .ExecuteUpdateAsync(x => x.SetProperty(x => x.Quantity, request.Order.Quantity)) > 0;
+                      .ExecuteUpdateAsync(x => x.SetProperty(x => x.Quantity, request.Order.Quantity), ct) > 0;
             }
 
             if (!result) Result<Unit>.Failure("Can not update order");

@@ -14,21 +14,21 @@ public class CreateOrder
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            bool result;
+            bool result;            
 
-            var user=await _context.Users
-                .FirstOrDefaultAsync(x=>x.UserName==_userAccessor.GetUsername());
-
-            var productNumberName = await _context.ProductNumbers
+            var productName = await _context.ProductNumbers
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(p => p.Name == request.Order.ProductName.Trim().ToUpper(), ct);
 
-            if (productNumberName is null) return null;
+            if (productName is null) return null;
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername(), ct);
 
             var orderDetail = new OrderDetail
             {
                 Quantity = request.Order.Quantity,
-                ProductNumber = productNumberName,
+                ProductNumber = productName,
             };
 
             var order = new Order

@@ -1,8 +1,4 @@
-﻿using Domain;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
-
-namespace Application.Orders;
+﻿namespace Application.Orders;
 public class OrderRoute
 {
     public class Query : IRequest<Result<List<OrderRouteDto>>>
@@ -25,6 +21,7 @@ public class OrderRoute
                 //.Include(a=>a.AppUser)
                 .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductNumber)
                 .FirstOrDefaultAsync(x=>x.Id == request.Id);
+
             if (dbOrder is null) return null;
             
             foreach (var product in dbOrder.OrderDetails)
@@ -33,7 +30,7 @@ public class OrderRoute
                       .Include(x => x.Location)
                       .Include(x => x.ProductNumber)
                       .Where(x => x.ProductNumber == product.ProductNumber)
-                      .ToListAsync();
+                      .ToListAsync(ct);
 
                 orderedProducts.AddRange(products);
             }
@@ -46,17 +43,17 @@ public class OrderRoute
                      .Where(x => x.Location.Name == location)
                      .ToList();
 
-                var partNumberNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
+                var productNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
 
                 var reqProd = new List<RequestedProductDto>();
 
-                foreach (var partNumberName in partNumberNames)
+                foreach (var productName in productNames)
                 {
                     reqProd.Add(new()
                     {
-                        ProductNumberName = partNumberName,
-                        AvailableProductNumberQuantity = products.Where(x => x.ProductNumber.Name == partNumberName).Count(),
-                        ReqQty = dbOrder.OrderDetails.FirstOrDefault(x => x.ProductNumber.Name == partNumberName).Quantity
+                        ProductNumberName = productName,
+                        AvailableProductNumberQuantity = products.Where(x => x.ProductNumber.Name == productName).Count(),
+                        ReqQty = dbOrder.OrderDetails.FirstOrDefault(x => x.ProductNumber.Name == productName).Quantity
                     });
                 }
 

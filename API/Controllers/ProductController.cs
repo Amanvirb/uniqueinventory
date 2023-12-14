@@ -10,7 +10,7 @@ namespace API.Controllers
         [HttpPost]  //api/AddProduct
         public async Task<IActionResult> AddProduct(ProductDto product)
         {
-            return HandleResult(await Mediator.Send(new AddProduct.Command { Product = product }));
+            return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
         }
 
         [HttpGet] //api/GetProducts
