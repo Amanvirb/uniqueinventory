@@ -7,14 +7,13 @@ public class EditProductName
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public CommonDto ProductName { get; set; }
-        public int Id { get; set; }
+        public CommonDto Product { get; set; }
     }
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.ProductName.Name).NotEmpty();
+            RuleFor(x => x.Product.Name).NotEmpty();
         }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
@@ -25,13 +24,13 @@ public class EditProductName
         {
             bool result;
 
-            var updatedProduct = request.ProductName;
+            var updatedProduct = request.Product;
 
             updatedProduct.Name = updatedProduct.Name.Trim().ToUpper();
 
             var dbProduct = await _context.ProductNumbers
                 .Include(x => x.Products)
-                .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
+                .FirstOrDefaultAsync(x => x.Id == request.Product.Id, ct);
 
             if (dbProduct is null) return null;
 
@@ -39,6 +38,7 @@ public class EditProductName
                 return Result<Unit>.Failure("Entered product name is same as previous");
 
             result = await _context.ProductNumbers
+                .Where(x=>x.Id== request.Product.Id)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, updatedProduct.Name), ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to update Product name");

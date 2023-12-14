@@ -7,7 +7,7 @@ public class EditLocation
     public class Command : IRequest<Result<Unit>>
     {
         public CommonDto Location { get; set; }
-        public int Id { get; set; }
+      
     }
     public class CommandValidator : AbstractValidator<Command>
     {
@@ -28,7 +28,7 @@ public class EditLocation
 
             var dbLocation = await _context.Locations
                 .Include(x => x.Products)
-                .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
+                .FirstOrDefaultAsync(x => x.Id == request.Location.Id, ct);
 
             if (dbLocation is null) return null;
 
@@ -36,6 +36,7 @@ public class EditLocation
                 return Result<Unit>.Failure("Entered location name is same as previous");
 
             result = await _context.Locations
+                .Where(x=>x.Id==request.Location.Id)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, updatedLocation), ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to update location");
