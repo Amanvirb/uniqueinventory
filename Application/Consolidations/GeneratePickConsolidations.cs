@@ -1,19 +1,13 @@
-﻿using Application.Core;
-using Application.Extensions;
-using Application.Products;
-using Domain;
-
-namespace Application.Consolidations;
+﻿namespace Application.Consolidations;
 public class GeneratePickConsolidations
 {
     public class Query : IRequest<Result<List<ConsolidationPickDto>>>
     {
         public SearchParams SearchParams { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ConsolidationPickDto>>>
+    public class Handler(DataContext context) : IRequestHandler<Query, Result<List<ConsolidationPickDto>>>
     {
         private readonly DataContext _context = context;
-        private readonly IMapper _mapper = mapper;
 
         public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken ct)
         {

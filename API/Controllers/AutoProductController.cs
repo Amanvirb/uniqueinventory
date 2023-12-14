@@ -8,7 +8,7 @@
         {
             foreach (var product in products)
             {
-                var res = await Mediator.Send(new AddProduct.Command { Product = product });
+                var res = await Mediator.Send(new AddProduct.AddProductCommand { Product = product });
                 if (!res.IsSuccess) return BadRequest(res.Error);
 
             }
@@ -28,7 +28,7 @@
             var products = GenerateAutoProduct();
             foreach (var product in products)
             {
-                var res = await Mediator.Send(new AddProduct.Command { Product = product });
+                var res = await Mediator.Send(new AddProduct.AddProductCommand { Product = product });
                 if (!res.IsSuccess) return BadRequest(res.Error);
 
             }

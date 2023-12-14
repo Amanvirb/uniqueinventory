@@ -1,29 +1,27 @@
-﻿using Domain;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Application.Products;
 
 public class AddProduct
 {
-    public class Command : IRequest<Result<Unit>>
+    public class AddProductCommand : IRequest<Result<Unit>>
     {
         public ProductDto Product { get; set; }
     }
 
-    public class CommandValidator : AbstractValidator<Command>
+    public class CommandValidator : AbstractValidator<AddProductCommand>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.Product.SerialNumber).NotEmpty();
-            RuleFor(x => x.Product.ProductNumberName).NotEmpty();
-            RuleFor(x => x.Product.LocationName).NotEmpty();
+            RuleFor(x => x.Product).SetValidator(new ProductValidator());
         }
     }
-    public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
+
+    public class Handler(DataContext context) : IRequestHandler<AddProductCommand, Result<Unit>>
     {
         private readonly DataContext _context = context;
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
+        public async Task<Result<Unit>> Handle(AddProductCommand request, CancellationToken ct)
         {
             bool result;
             var newProduct = request.Product;

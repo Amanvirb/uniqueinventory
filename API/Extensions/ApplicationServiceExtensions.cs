@@ -1,12 +1,7 @@
-using Application.Core;
 using Application.Interfaces;
-using Application.Products;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Extensions;
 
@@ -23,8 +18,12 @@ public static class ApplicationServiceExtensions
         //{
         //    opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
         //});
+        services.AddFluentValidationAutoValidation()
+               .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining<ProductValidator>();
 
-
+        //services.AddValidatorsFromAssemblyContaining<ProductValidator>();
+        //services.AddScoped<IValidator<ProductDto>, ProductValidator>();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddProduct.Handler).Assembly));
         //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddProduct.Handler>());
@@ -32,8 +31,7 @@ public static class ApplicationServiceExtensions
 
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
-        services.AddFluentValidationAutoValidation();
-        services.AddValidatorsFromAssemblyContaining<ProductDetail>();
+
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserAccessor, UserAccessor>();

@@ -1,10 +1,4 @@
-﻿using Application.Core;
-using Application.Extensions;
-using Application.Products;
-using Domain;
-using Microsoft.Extensions.Logging;
-
-namespace Application.Consolidations;
+﻿namespace Application.Consolidations;
 public class GeneratePutConsolidations
 {
     public class Query : IRequest<Result<List<ConsolidationPutDto>>>
