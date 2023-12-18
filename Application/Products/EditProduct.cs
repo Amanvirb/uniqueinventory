@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Products;
 
@@ -13,7 +12,7 @@ public class EditProduct
     {
         public CommandValidator()
         {
-            RuleFor(x => x.UpdatedProduct.LocationName).NotEmpty();
+            RuleFor(x => x.UpdatedProduct).SetValidator(new UpdateProductValidator());
         }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>

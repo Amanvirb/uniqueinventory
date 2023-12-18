@@ -43,6 +43,7 @@ public class GeneratePutConsolidations
 
             }
 
+            //Get all empty Locations
             var emptyLocations = await _context.Locations
                 .Include(x => x.Products)
                 .Where(x => x.Products.Count == 0)
