@@ -1,7 +1,5 @@
-﻿using Application.Dto;
-using Application.Locations;
+﻿using Application.Locations;
 using Application.ProductNumbers;
-using Domain;
 
 namespace API.Controllers;
 public class ProductNumberNameController : BaseApiController

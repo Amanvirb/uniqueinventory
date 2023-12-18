@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Locations;
+using FluentValidation;
 
 namespace Application.Products;
 
@@ -7,13 +8,13 @@ public class EditLocation
     public class Command : IRequest<Result<Unit>>
     {
         public CommonDto Location { get; set; }
-      
     }
+
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.Location).NotEmpty();
+            RuleFor(x => x.Location).SetValidator(new CommonValidator());
         }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>

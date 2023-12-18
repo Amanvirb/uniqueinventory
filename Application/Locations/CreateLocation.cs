@@ -1,9 +1,20 @@
-﻿namespace Application.Locations;
+﻿using Application.Products;
+using FluentValidation;
+using static Application.Products.AddProduct;
+
+namespace Application.Locations;
 public class CreateLocation
 {
     public class Command : IRequest<Result<Unit>>
     {
         public AddLocationDto Location { get; set; }
+    }
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Location).SetValidator(new CreateLocationValidator());
+        }
     }
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {

@@ -1,9 +1,19 @@
-﻿namespace Application.ProductNumbers;
+﻿using Application.Locations;
+using FluentValidation;
+
+namespace Application.ProductNumbers;
 public class AddProductNumber
 {
     public class Command : IRequest<Result<Unit>>
     {
         public CommonDto Name { get; set; }
+    }
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Name).SetValidator(new CommonValidator());
+        }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
