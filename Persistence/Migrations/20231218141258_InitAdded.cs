@@ -221,6 +221,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    BuyerId = table.Column<string>(type: "TEXT", nullable: true),
                     OrderNumber = table.Column<int>(type: "INTEGER", nullable: false),
                     Confirmed = table.Column<bool>(type: "INTEGER", nullable: false),
                     Packed = table.Column<bool>(type: "INTEGER", nullable: false),

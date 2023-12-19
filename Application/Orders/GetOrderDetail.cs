@@ -18,7 +18,7 @@ public class GetOrderDetail
                 .Include(x => x.OrderDetails)
                 .ProjectTo<FullOrderDetailDto>(_mapper.ConfigurationProvider)
                  .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
-
+            
             if (dbOrder is null) return Result<FullOrderDetailDto>.Failure("Order not found");
 
             return Result<FullOrderDetailDto>.Success(dbOrder);

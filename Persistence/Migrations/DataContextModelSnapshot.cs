@@ -107,6 +107,9 @@ namespace Persistence.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("Confirmed")
                         .HasColumnType("INTEGER");
 
