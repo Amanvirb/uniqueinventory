@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231207141834_InitAdded")]
+    [Migration("20231218141258_InitAdded")]
     partial class InitAdded
     {
         /// <inheritdoc />
@@ -108,6 +108,9 @@ namespace Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AppUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BuyerId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Confirmed")
