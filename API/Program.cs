@@ -1,19 +1,41 @@
 using API.Extensions;
 using API.Middleware;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Persistence.Seeds;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<DataContext>(opt =>
+{
+    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddEntityFrameworkStores<DataContext>();
+
+//builder.Services.AddApplicationServices(builder.Configuration);
+
+//builder.Services.AddAuthorizationBuilder();
+//builder.Services
+//    .AddIdentityApiEndpoints<AppUser>()
+//    .AddEntityFrameworkStores<DataContext>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -28,14 +50,16 @@ builder.Services.AddSwaggerGen(options =>
 }
 );
 
-builder.Services.AddApplicationServices(builder.Configuration);
-
-
+//builder.Services.AddIdentityServices();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<AppUser>()
-    .AddEntityFrameworkStores<DataContext>();
+//builder.Services.AddIdentityApiEndpoints<AppUser>()
+//     .AddEntityFrameworkStores<DataContext>()
+//       .AddSignInManager<SignInManager<AppUser>>()
+//        .AddRoleManager<RoleManager<IdentityRole>>()
+//        .AddUserManager<UserManager<AppUser>>();
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -89,9 +113,13 @@ try
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
 
-    var userContext = services.GetRequiredService<DataContext>();
+    DefaultUsers.SeedUsers1Async(services).Wait();
+
+    //var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    //await DefaultRoles.SeedRolesAsync(roleManager);
+
     //var userManager = services.GetRequiredService<UserManager<AppUser>>();
-    await userContext.Database.MigrateAsync();
+    //await DefaultUsers.SeedUsersAsync(userManager);
 
     //await Seed.SeedData(context, userManager);
 }
@@ -100,6 +128,8 @@ catch (Exception ex)
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
+
+app.MapIdentityApi<AppUser>();
 
 app.Run();
 
