@@ -1,40 +1,41 @@
-﻿
-using Application.History;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
-namespace API.Controllers
+namespace API.Controllers;
+public class ProductController : BaseApiController
 {
-    public class ProductController : BaseApiController
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost]
+    public async Task<IActionResult> AddProduct(ProductDto product)
     {
-        [Authorize]
-        [HttpPost]  //api/AddProduct
-        public async Task<IActionResult> AddProduct(ProductDto product)
-        {
-            return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
-        }
+        return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
+    }
 
-        [HttpGet] //api/GetProducts
-        public async Task<IActionResult> GetProductList()
-        {
-            return HandleResult(await Mediator.Send(new ProductList.Query()));
-        }
+    [AllowAnonymous]
+    [HttpGet]
+    public async Task<IActionResult> GetProductList()
+    {
+        return HandleResult(await Mediator.Send(new ProductList.Query()));
+    }
 
-        [HttpGet("{id}")] //api/GetProductDetail
-        public async Task<IActionResult> GetProductDetail(int id)
-        {
-            return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
-        }
-        [Authorize]
-        [HttpPut] //api/UpdateProduct
-        public async Task<IActionResult> UpdateProduct(UpdateProductDto updatedProduct)
-        {
-            return HandleResult(await Mediator.Send(new EditProduct.Command { UpdatedProduct = updatedProduct }));
-        }
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProductDetail(int id)
+    {
+        return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
+    }
 
-        [HttpDelete("{id}")] //api/DeleteProduct//
-        public async Task<IActionResult> DeleteProduct(string productName, int id)
-        {
-            return HandleResult(await Mediator.Send(new DeleteProduct.Command { Id = id }));
-        }
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateProduct(UpdateProductDto updatedProduct)
+    {
+        return HandleResult(await Mediator.Send(new EditProduct.Command { UpdatedProduct = updatedProduct }));
+    }
+
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(string productName, int id)
+    {
+        return HandleResult(await Mediator.Send(new DeleteProduct.Command { Id = id }));
     }
 }

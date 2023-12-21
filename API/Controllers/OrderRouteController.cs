@@ -1,17 +1,14 @@
-﻿using Application.Consolidations;
-using Application.Locations;
-using Application.Orders;
-using Domain;
+﻿using Application.Orders;
+using Microsoft.AspNetCore.Authorization;
 
-namespace API.Controllers
+namespace API.Controllers;
+public class OrderRouteController : BaseApiController
 {
-    public class OrderRouteController : BaseApiController
+    [Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetOrderRoute(string id)
     {
-        [HttpGet("{id}")] //api/GetOrderRoute
-        public async Task<IActionResult> GetOrderRoute(int id)
-        {
-            return HandleResult(await Mediator.Send(new OrderRoute.Query
-            { Id = id }));
-        }
+        return HandleResult(await Mediator.Send(new OrderRoute.Query
+        { OrderId = id }));
     }
 }

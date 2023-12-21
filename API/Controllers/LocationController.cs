@@ -1,35 +1,36 @@
-﻿using Application.Dto;
-using Application.Locations;
-using Domain;
+﻿using Application.Locations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
+
+[Authorize(Roles = "SuperAdmin,Admin,Employee")]
 public class LocationController : BaseApiController
 {
-    [HttpPost] //api//CreateLocation
+    [HttpPost] 
     public async Task<IActionResult> CreateLocation(AddLocationDto location)
     {
         return HandleResult(await Mediator.Send(new CreateLocation.Command { Location = location }));
     }
 
-    [HttpGet] //api/ GetLocationList
+    [HttpGet] 
     public async Task<IActionResult> GetLocationList()
     {
         return HandleResult(await Mediator.Send(new LocationList.Query()));
     }
 
-    [HttpGet("{name}")] //api/GetProductDetail
+    [HttpGet("{name}")] 
     public async Task<IActionResult> GetLocationDetail(string name)
     {
         return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
-    [HttpPut] //api/UpdateLocation
+    [HttpPut] 
     public async Task<IActionResult> UpdateLocation(CommonDto location)
     {
         return HandleResult(await Mediator.Send(new EditLocation.Command {Location = location }));
     }
 
-    [HttpDelete("{id}")] //api/GetProductDetail
+    [HttpDelete("{id}")] 
     public async Task<IActionResult> DeleteLocation(int id)
     {
         return HandleResult(await Mediator.Send(new DeleteLocation.Command { Id = id }));

@@ -1,38 +1,35 @@
 using API.Extensions;
 using API.Middleware;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Seeds;
 using Swashbuckle.AspNetCore.Filters;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+});
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
-
-builder.Services.AddAuthorization();
-
-builder.Services.AddIdentityApiEndpoints<AppUser>()
-    .AddEntityFrameworkStores<DataContext>();
-
-//builder.Services.AddApplicationServices(builder.Configuration);
-
-//builder.Services.AddAuthorizationBuilder();
-//builder.Services
-//    .AddIdentityApiEndpoints<AppUser>()
-//    .AddEntityFrameworkStores<DataContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -47,18 +44,10 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 
-}
-);
+});
 
-//builder.Services.AddIdentityServices();
 
-builder.Services.AddAuthorization();
-
-//builder.Services.AddIdentityApiEndpoints<AppUser>()
-//     .AddEntityFrameworkStores<DataContext>()
-//       .AddSignInManager<SignInManager<AppUser>>()
-//        .AddRoleManager<RoleManager<IdentityRole>>()
-//        .AddUserManager<UserManager<AppUser>>();
+//builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
@@ -98,38 +87,38 @@ else
         });
 }
 
-app.MapIdentityApi<AppUser>();
 
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-
+var logger = services.GetRequiredService<ILogger<Program>>();
 try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
 
-    DefaultUsers.SeedUsers1Async(services).Wait();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    logger.LogWarning("User manager service is ready");
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    logger.LogWarning("Role manager service is ready");
 
-    //var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    //await DefaultRoles.SeedRolesAsync(roleManager);
+    await DefaultRoles.SeedRolesAsync(roleManager);
+    logger.LogWarning("Finished Seeding Role Data");
 
-    //var userManager = services.GetRequiredService<UserManager<AppUser>>();
-    //await DefaultUsers.SeedUsersAsync(userManager);
+    await SeedUsers.SeedUserDataAsync(userManager);
+    logger.LogWarning("Finished Seeding Users with Roles");
 
-    //await Seed.SeedData(context, userManager);
 }
 catch (Exception ex)
 {
-    var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
 
-app.MapIdentityApi<AppUser>();
 
 app.Run();
 

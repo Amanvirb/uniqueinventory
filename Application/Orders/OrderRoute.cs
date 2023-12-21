@@ -3,12 +3,11 @@ public class OrderRoute
 {
     public class Query : IRequest<Result<List<OrderRouteDto>>>
     {
-        public int Id { get; set; }
+        public string OrderId { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<OrderRouteDto>>>
+    public class Handler(DataContext context) : IRequestHandler<Query, Result<List<OrderRouteDto>>>
     {
         private readonly DataContext _context = context;
-        private readonly IMapper _mapper = mapper;
 
         public async Task<Result<List<OrderRouteDto>>> Handle(Query request, CancellationToken ct)
         {
@@ -18,9 +17,9 @@ public class OrderRoute
             List<Product> orderedProducts = new();
 
             var dbOrder = await _context.Orders
-                //.Include(a=>a.AppUser)
+                .Include(a => a.AppUser)
                 .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductNumber)
-                .FirstOrDefaultAsync(x=>x.Id == request.Id);
+                .FirstOrDefaultAsync(x =>x.OrderId == request.OrderId, ct);
 
             if (dbOrder is null) return null;
             

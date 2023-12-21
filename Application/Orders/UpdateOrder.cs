@@ -19,7 +19,7 @@ public class UpdateOrder
             if (request.Order.Quantity < 1)
             {
                 await _context.OrderDetails
-                    .Where(x => x.OrderId == request.Order.Id && x.ProductNumber.Name == product)
+                    .Where(x => x.OrderId == request.Order.OrderId && x.ProductNumber.Name == product)
                     .ExecuteDeleteAsync(ct);
 
                 return Result<Unit>.Success(Unit.Value);
@@ -27,9 +27,9 @@ public class UpdateOrder
 
             bool result;
             var dbOrder = await _context.Orders
-               // .Include(a => a.AppUser)
+                .Include(a => a.AppUser)
                 .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
-                .FirstOrDefaultAsync(x => x.Id == request.Order.Id
+                .FirstOrDefaultAsync(x => x.OrderId == request.Order.OrderId
                 && x.Confirmed == false, ct);
 
             if (dbOrder is null) return null;
