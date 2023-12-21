@@ -1,14 +1,14 @@
-﻿using Application.Orders;
-using Application.ProductSearch;
+﻿using Application.ProductSearch;
+using Microsoft.AspNetCore.Authorization;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+[AllowAnonymous]
+public class SearchProductController : BaseApiController
 {
-    public class SearchProductController : BaseApiController
+    [HttpGet]
+    public async Task<IActionResult> GetSearchedProducts([FromQuery] ProductSearchParams searchParams)
     {
-        [HttpGet] //api/GetSerachedProducts
-        public async Task<IActionResult> GetSearchedProducts([FromQuery]ProductSearchParams searchParams)
-        {
-            return HandleResult(await Mediator.Send(new SearchProduct.Query { Params = searchParams}));
-        }
+        return HandleResult(await Mediator.Send(new SearchProduct.Query { Params = searchParams }));
     }
 }

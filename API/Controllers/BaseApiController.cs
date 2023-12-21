@@ -1,8 +1,6 @@
 using API.Extensions;
-using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]

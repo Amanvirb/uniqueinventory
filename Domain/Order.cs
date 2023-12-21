@@ -1,9 +1,10 @@
-﻿namespace Domain;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Domain;
 public class Order
 {
-    public int Id { get; set; }
-    public string BuyerId { get; set; }
-    public int OrderNumber { get; set; }
+    [Key]
+    public string OrderId { get; set; }
     public bool Confirmed { get; set; }
     public bool Packed { get; set; }
 

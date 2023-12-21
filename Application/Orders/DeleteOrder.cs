@@ -4,7 +4,7 @@ public class DeleteOrder
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public int Id { get; set; }
+        public string OrderId { get; set; }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
@@ -13,7 +13,7 @@ public class DeleteOrder
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
             var result = await _context.Orders
-                 .Where(x => x.Id == request.Id)
+                 .Where(x => x.OrderId == request.OrderId)
                  .ExecuteDeleteAsync(ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to Delete Order");

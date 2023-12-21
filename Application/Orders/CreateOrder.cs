@@ -6,7 +6,7 @@ public class CreateOrder
     public class Command : IRequest<Result<Unit>>
     {
         public CreateOrderDto Order { get; set; }
-        public string BuyerId { get; set; }
+        public string OrderId { get; set; }
     }
     public class Handler(DataContext context, IUserAccessor userAccessor) : IRequestHandler<Command, Result<Unit>>
     {
@@ -34,7 +34,7 @@ public class CreateOrder
 
             var order = new Order
             {
-                BuyerId = request.BuyerId,
+                OrderId = request.OrderId,
                 Confirmed = false,
                 Packed = false,
                 OrderDetails = new[] { orderDetail },

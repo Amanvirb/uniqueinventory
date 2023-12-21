@@ -1,13 +1,9 @@
-﻿using Application.Core;
-using Microsoft.EntityFrameworkCore.Sqlite.Storage.Json.Internal;
-
-namespace Application.Products;
-
+﻿namespace Application.Products;
 public class DeleteOrderDetail
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public int OrderId { get; set; }
+        public string OrderId { get; set; }
         public string ProductName { get; set; }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
