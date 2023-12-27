@@ -1,4 +1,6 @@
-﻿namespace Application.Consolidations;
+﻿using Application.Core.UtilHelper;
+
+namespace Application.Consolidations;
 public class GeneratePickConsolidations
 {
     public class Query : IRequest<Result<List<ConsolidationPickDto>>>
@@ -20,28 +22,8 @@ public class GeneratePickConsolidations
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
              .ToListAsync();
 
-            var locations = dbProducts.Select(x => x.Location).Distinct().ToList();
+            var output = UtilHelper.GenConsolidatePick(productName, dbProducts);
 
-            var output = new List<ConsolidationPickDto>();
-
-            foreach (var location in locations)
-            {
-                var serials = dbProducts
-                    .Where(x => x.Location == location)
-                    .Select((p) => new ConsolidateSerialDto
-                    {
-                        SerialNo = p.SerialNumber
-                    })
-                    .ToList();
-
-                output.Add(new()
-                {
-                    LocationName = location.Name,
-                    Serials = serials,
-                    ProductNumberName = productName,
-                });
-
-            }
             return Result<List<ConsolidationPickDto>>.Success(output);
 
         }
