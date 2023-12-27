@@ -16,7 +16,7 @@ public class LocationDetail
             var location = await _context.Locations
                 .Include(x => x.Products)
                 .ProjectTo<LocationDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Name == request.Name.Trim().ToUpper(), ct);
+                .FirstOrDefaultAsync(x => x.Name == request.Name, ct);
 
             if (location is null) return null;
 

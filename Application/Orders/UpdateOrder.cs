@@ -1,6 +1,4 @@
-﻿using Domain;
-
-namespace Application.Orders;
+﻿namespace Application.Orders;
 public class UpdateOrder
 {
     public class Command : IRequest<Result<Unit>>
@@ -13,8 +11,7 @@ public class UpdateOrder
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            //Remember to add order owner policy
-            var product = request.Order.ProductName.Trim().ToUpper();
+            var product = request.Order.ProductName;
 
             if (request.Order.Quantity < 1)
             {
@@ -27,10 +24,9 @@ public class UpdateOrder
 
             bool result;
             var dbOrder = await _context.Orders
-                .Include(a => a.AppUser)
                 .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
                 .FirstOrDefaultAsync(x => x.OrderId == request.Order.OrderId
-                && x.Confirmed == false, ct);
+                && !x.Confirmed, ct);
 
             if (dbOrder is null) return null;
 

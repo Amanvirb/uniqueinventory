@@ -18,8 +18,6 @@ public class GetSerialNumberHistory
                .Take(100)
                .ToListAsync(ct);
 
-                if (serialNumberHistory is null) return null;
-
                 return Result<List<SerialNumberHistoryDto>>.Success(serialNumberHistory);
             }
         }

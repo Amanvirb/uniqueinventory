@@ -25,13 +25,10 @@ public class EditProduct
 
             var updatedProduct = request.UpdatedProduct;
 
-            updatedProduct.LocationName = updatedProduct.LocationName.Trim().ToUpper();
-            updatedProduct.ProductName = updatedProduct.ProductName.Trim().ToUpper();
-
             var dbProduct = await _context.Products
                 .Include(x => x.Location)
                 .Include(x => x.ProductNumber)
-                .FirstOrDefaultAsync(x => x.Id == request.UpdatedProduct.Id, ct);
+                .FirstOrDefaultAsync(x => x.Id == updatedProduct.Id, ct);
 
             if (dbProduct is null) return null;
 
@@ -40,12 +37,12 @@ public class EditProduct
                 return Result<Unit>.Failure("Entered product name and location Name is same as previous");
 
             var existingLocation = await _context.Locations
-            .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.LocationName, ct);
+            .FirstOrDefaultAsync(x => x.Name == updatedProduct.LocationName, ct);
 
             if (existingLocation is null) return null;
 
             var existingProductNumber = await _context.ProductNumbers
-                .FirstOrDefaultAsync(x => x.Name == request.UpdatedProduct.ProductName, ct);
+                .FirstOrDefaultAsync(x => x.Name == updatedProduct.ProductName, ct);
 
             if (existingProductNumber is null) return null;
 
@@ -62,7 +59,6 @@ public class EditProduct
             dbProduct.ProductNumber = existingProductNumber;
 
             _context.Entry(dbProduct).State = EntityState.Modified;
-
 
             _context.ProductUpdateHistories.Add(updatedNewProduct);
 

@@ -5,14 +5,12 @@ public class GeneratePutConsolidations
     {
         public SearchParams SearchParams { get; set; }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ConsolidationPutDto>>>
+    public class Handler(DataContext context) : IRequestHandler<Query, Result<List<ConsolidationPutDto>>>
     {
         private readonly DataContext _context = context;
-        private readonly IMapper _mapper = mapper;
-
         public async Task<Result<List<ConsolidationPutDto>>> Handle(Query request, CancellationToken ct)
         {
-            var productName = request.SearchParams.ProductNumberName.Trim().ToUpper();
+            var productName = request.SearchParams.ProductNumberName;
 
             var dbProducts = await _context.Products
              .Include(x => x.Location)

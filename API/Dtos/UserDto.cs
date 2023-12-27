@@ -7,5 +7,5 @@ public class UserDto
     public string Bio { get; set; }
     public string AccessToken { get; set; }
     public string TokenType { get; set; } = "Bearer";
-
+    public string OrderId { get; set; }
 }

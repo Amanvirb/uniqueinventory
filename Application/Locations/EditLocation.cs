@@ -25,7 +25,7 @@ public class EditLocation
         {
             bool result;
 
-            var updatedLocation = request.Location.Name.Trim().ToUpper();
+            var updatedLocation = request.Location.Name;
 
             var dbLocation = await _context.Locations
                 .Include(x => x.Products)
@@ -37,7 +37,7 @@ public class EditLocation
                 return Result<Unit>.Failure("Entered location name is same as previous");
 
             result = await _context.Locations
-                .Where(x=>x.Id==request.Location.Id)
+                .Where(x => x.Id == request.Location.Id)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, updatedLocation), ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to update location");

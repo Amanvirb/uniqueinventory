@@ -24,6 +24,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.Users
+                 .Include(x => x.Orders)
                 .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
             if (user == null) return Unauthorized();
@@ -77,6 +78,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.Users
+                .Include(x => x.Orders)
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
             return await CreateUserObject(user);
@@ -98,6 +100,7 @@ namespace API.Controllers
             var refreshToken = Request.Cookies["refreshToken"];
             var user = await _userManager.Users
                 .Include(r => r.RefreshTokens)
+                .Include(x => x.Orders)
                 .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
 
             if (user == null) return Unauthorized();
@@ -109,7 +112,7 @@ namespace API.Controllers
             return await CreateUserObject(user);
         }
 
-        private async Task<UserDto>  CreateUserObject(AppUser user)
+        private async Task<UserDto> CreateUserObject(AppUser user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
@@ -118,7 +121,8 @@ namespace API.Controllers
             {
                 FullName = user.Fullname,
                 AccessToken = _tokenService.CreateToken(user, userClaims, roles),
-                Username = user.UserName
+                Username = user.UserName,
+                OrderId = user.Orders.FirstOrDefault(x => !x.Confirmed)?.OrderId,
             };
         }
         private async Task SetRefreshToken(AppUser user)
@@ -136,6 +140,6 @@ namespace API.Controllers
 
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
-       
+
     }
 }

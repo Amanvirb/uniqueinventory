@@ -17,8 +17,8 @@ public class ProductDetail
     }
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<ProductDto>>
     {
-        private DataContext _context = context;
-        private IMapper _mapper = mapper;
+        private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Result<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
         {
