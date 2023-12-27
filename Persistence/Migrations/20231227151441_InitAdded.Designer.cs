@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231221150900_InitAdded")]
+    [Migration("20231227151441_InitAdded")]
     partial class InitAdded
     {
         /// <inheritdoc />
@@ -392,7 +392,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Order", b =>
                 {
                     b.HasOne("Domain.AppUser", "AppUser")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("AppUserId");
 
                     b.Navigation("AppUser");
@@ -496,6 +496,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("RefreshTokens");
                 });
 

@@ -14,14 +14,10 @@ public class SearchProduct
         public async Task<Result<List<ProductSearchDto>>> Handle(Query request, CancellationToken ct)
         {
             var param = request.Params;
-            
-            param.ProductName = param.ProductName?.Trim().ToUpper() ?? string.Empty;
-            param.Location = param.Location?.Trim().ToUpper() ?? string.Empty;
-            param.SerialNo = param.SerialNo?.Trim().ToUpper() ?? string.Empty;
 
             var output = new List<ProductSearchDto>();
 
-            List<ProductSearchProductNameDto> searchedProducts = new();
+            List<ProductSearchProductNameDto> searchedProducts = [];
 
             var query = _context.Products
                  .Include(x => x.Location)
@@ -39,7 +35,7 @@ public class SearchProduct
 
                 var selectedLocations = selectedProducts.Select(x => x.Location.Name).Distinct().ToList();
                
-                List<ProductSearchProductNameDto> searchedProductsName = new();
+                List<ProductSearchProductNameDto> searchedProductsName = [];
 
                 foreach (var location in selectedLocations)
                 {

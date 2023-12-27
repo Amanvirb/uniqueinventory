@@ -11,7 +11,7 @@ public class GeneratePickConsolidations
 
         public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken ct)
         {
-            var productName = request.SearchParams.ProductNumberName.Trim().ToUpper();
+            var productName = request.SearchParams.ProductNumberName;
 
             var dbProducts = await _context.Products
              .Include(x => x.Location)

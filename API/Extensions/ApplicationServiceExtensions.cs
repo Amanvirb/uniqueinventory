@@ -35,10 +35,7 @@ public static class ApplicationServiceExtensions
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddProduct.Handler).Assembly));
         //services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<AddProduct.Handler>());
 
-
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-
-
 
         services.AddHttpContextAccessor();
         services.AddScoped<IUserAccessor, UserAccessor>();

@@ -24,22 +24,18 @@ public class EditProductName
         {
             bool result;
 
-            var updatedProduct = request.Product;
-
-            updatedProduct.Name = updatedProduct.Name.Trim().ToUpper();
-
-            var dbProduct = await _context.ProductNumbers
+             var dbProduct = await _context.ProductNumbers
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(x => x.Id == request.Product.Id, ct);
 
             if (dbProduct is null) return null;
 
-            if (dbProduct.Name == updatedProduct.Name)
+            if (dbProduct.Name == request.Product.Name)
                 return Result<Unit>.Failure("Entered product name is same as previous");
 
             result = await _context.ProductNumbers
                 .Where(x=>x.Id== request.Product.Id)
-                .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, updatedProduct.Name), ct) > 0;
+                .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, request.Product.Name), ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to update Product name");
 

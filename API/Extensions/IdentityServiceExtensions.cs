@@ -1,6 +1,8 @@
 ﻿using API.Services;
 using Domain;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
@@ -43,6 +45,23 @@ public static class IdentityServiceExtensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy("IsOrderOwner", policy =>
+            {
+                policy.Requirements.Add(new IsOrderRequirement());
+            });
+
+
+        //services.AddAuthorization(opt =>
+        //{
+        //    opt.AddPolicy("IsOrderOwner", policy =>
+        //    {
+        //        policy.Requirements.Add(new IsOrderRequirement());
+        //    });
+        //});
+
+        services.AddTransient<IAuthorizationHandler, IsOrderRequirementHandler>();
 
         services.AddScoped<TokenService>();
 

@@ -4,30 +4,26 @@ using Microsoft.AspNetCore.Authorization;
 namespace API.Controllers;
 public class OrderController : BaseApiController
 {
-    //[HttpPost("createOrder")] //api/GetCreateOrder
-    //public async Task<IActionResult> CreateOrder(CreateOrderDto order)
-    //{
-    //    return HandleResult(await Mediator.Send(new CreateOrder.Command
-    //    { Order = order }));
-    //}
-
-    [AllowAnonymous]
-    [HttpPost("createOrder")] 
+    [Authorize]
+    [HttpPost("createOrder")]
     public async Task<IActionResult> CreateOrder(CreateOrderDto order)
     {
-        var orderId = Guid.NewGuid().ToString();
+        return HandleResult(await Mediator.Send(new CreateOrder.Command
+        { Order = order }));
 
-        var cookiesOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
+        //var cookiesOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
 
-        Response.Cookies.Append("orderId", orderId, cookiesOptions);
+        //Response.Cookies.Append("orderId", orderId, cookiesOptions);
 
-        return HandleResult(await Mediator.Send(new CreateOrder.Command { Order = order, OrderId = orderId }));
+        //return HandleResult(await Mediator.Send(new CreateOrder.Command { Order = order, OrderId = orderId }));
     }
 
-    [AllowAnonymous]
-    [HttpPut]
-    public async Task<IActionResult> UpdateOrder(UpdateOrderDto order)
+    [Authorize(Policy = "IsOrderOwner")]
+    [HttpPut("{orderId}")]
+    public async Task<IActionResult> UpdateOrder(string orderId, UpdateOrderDto order)
     {
+        order.OrderId = orderId;
+
         return HandleResult(await Mediator.Send(new UpdateOrder.Command
         { Order = order }));
     }
@@ -39,21 +35,21 @@ public class OrderController : BaseApiController
         return HandleResult(await Mediator.Send(new OrderList.Query()));
     }
 
-    [AllowAnonymous]
+    [Authorize(Policy = "IsOrderOwner")]
     [HttpGet("{orderId}")]
     public async Task<IActionResult> GetOrderDetail(string orderId)
     {
         return HandleResult(await Mediator.Send(new GetOrderDetail.Query { OrderId = orderId }));
     }
 
-    [AllowAnonymous]
+    [Authorize(Policy = "IsOrderOwner")]
     [HttpDelete("{orderId}")]
     public async Task<IActionResult> DeleteOrder(string orderId)
     {
         return HandleResult(await Mediator.Send(new DeleteOrder.Command { OrderId = orderId }));
     }
 
-    [AllowAnonymous]
+    [Authorize(Policy = "IsOrderOwner")]
     [HttpDelete("{orderId}/{productName}")]
     public async Task<IActionResult> DeleteOrderDeatil(string orderId, string productName)
     {

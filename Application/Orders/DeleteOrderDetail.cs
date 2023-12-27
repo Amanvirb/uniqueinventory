@@ -14,7 +14,7 @@ public class DeleteOrderDetail
         {
             var result = await _context.OrderDetails
                 .Where(x => x.OrderId == request.OrderId
-                && x.ProductNumber.Name == request.ProductName.Trim().ToUpper())
+                && x.ProductNumber.Name == request.ProductName)
                 .ExecuteDeleteAsync(ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to Delete Product");

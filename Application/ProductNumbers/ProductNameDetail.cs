@@ -16,7 +16,7 @@ public class ProductNameDetail
             var product = await _context.ProductNumbers
                 .Include(x => x.Products)
                 .ProjectTo<ProductNumberDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Name == request.Name.Trim().ToUpper(), ct);
+                .FirstOrDefaultAsync(x => x.Name == request.Name, ct);
 
             if (product is null) return null;
 

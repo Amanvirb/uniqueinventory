@@ -16,14 +16,9 @@ public class CreateLocation
             RuleFor(x => x.Location).SetValidator(new CreateLocationValidator());
         }
     }
-    public class Handler : IRequestHandler<Command, Result<Unit>>
+    public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
-        private readonly DataContext _context;
-
-        public Handler(DataContext context)
-        {
-            _context = context;
-        }
+        private readonly DataContext _context = context;
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {

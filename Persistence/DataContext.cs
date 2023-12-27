@@ -19,7 +19,21 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
     {
         base.OnModelCreating(builder);
 
+        //builder.Entity<Product>(p =>
+        //{
+        //    p.Property(x => x.SerialNumber)
+        //    .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+        //});
+        //builder.Entity<ProductNumber>(p =>
+        //{
+        //    p.Property(x => x.Name)
+        //    .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+        //});
+        //builder.Entity<Location>(p =>
+        //{
+        //    p.Property(x => x.Name)
+        //    .UseCollation("SQL_Latin1_General_CP1_CS_AS");
+        //});
     }
-
 }
 
