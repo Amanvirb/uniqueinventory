@@ -8,12 +8,12 @@ public class ProductList
             private readonly DataContext _context = context;
             private readonly IMapper _mapper = mapper;
 
-            public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken ct)
             {
                 var productList = await _context.Products
                     .Include(x => x.Location)
                     .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken: cancellationToken);
+                    .ToListAsync(ct);
 
                 return Result<List<ProductDto>>.Success(productList);
             }

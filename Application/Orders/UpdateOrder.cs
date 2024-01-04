@@ -28,7 +28,7 @@ public class UpdateOrder
                 .FirstOrDefaultAsync(x => x.OrderId == request.Order.OrderId
                 && !x.Confirmed, ct);
 
-            if (dbOrder is null) return null;
+            if (dbOrder is null) return Result<Unit>.Failure("Order does not exist");
 
             var orderDetail = dbOrder.OrderDetails
                 .FirstOrDefault(x => x.ProductNumber.Name == product);
@@ -44,7 +44,6 @@ public class UpdateOrder
 
                 _context.OrderDetails.Add(newOrderDetails);
                 result = await _context.SaveChangesAsync(ct) > 0;
-
             }
             else
             {

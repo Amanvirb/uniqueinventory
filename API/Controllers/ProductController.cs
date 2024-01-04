@@ -34,7 +34,7 @@ public class ProductController : BaseApiController
 
     [Authorize(Roles = "SuperAdmin")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(string productName, int id)
+    public async Task<IActionResult> DeleteProduct(int id)
     {
         return HandleResult(await Mediator.Send(new DeleteProduct.Command { Id = id }));
     }

@@ -20,7 +20,7 @@ public class CreateOrder
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(p => p.Name == request.Order.ProductName.Trim().ToUpper(), ct);
 
-            if (productName is null) return null;
+            if (productName is null) return Result<Unit>.Failure("Pruduct not found");
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername(), ct);

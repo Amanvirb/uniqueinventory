@@ -17,7 +17,7 @@ public class EditProduct
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
-        private DataContext _context = context;
+        private readonly DataContext _context = context;
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
@@ -30,7 +30,7 @@ public class EditProduct
                 .Include(x => x.ProductNumber)
                 .FirstOrDefaultAsync(x => x.Id == updatedProduct.Id, ct);
 
-            if (dbProduct is null) return null;
+            if (dbProduct is null) return Result<Unit>.Failure("Product not found");
 
             if (dbProduct.Location.Name == updatedProduct.LocationName
                 && dbProduct.ProductNumber.Name == updatedProduct.ProductName)
@@ -39,24 +39,24 @@ public class EditProduct
             var existingLocation = await _context.Locations
             .FirstOrDefaultAsync(x => x.Name == updatedProduct.LocationName, ct);
 
-            if (existingLocation is null) return null;
+            if (existingLocation is null) return Result<Unit>.Failure("Location does not exist");
 
-            var existingProductNumber = await _context.ProductNumbers
+            var existingProductName = await _context.ProductNumbers
                 .FirstOrDefaultAsync(x => x.Name == updatedProduct.ProductName, ct);
 
-            if (existingProductNumber is null) return null;
+            if (existingProductName is null) return Result<Unit>.Failure("Product name does not exist");
 
             var updatedNewProduct = new ProductUpdateHistory
             {
                 SerialNumber = dbProduct.SerialNumber,
                 Location = dbProduct.Location.Name != updatedProduct.LocationName ? existingLocation.Name : dbProduct.Location.Name,
-                ProductNumber = dbProduct.ProductNumber.Name != updatedProduct.ProductName ? existingProductNumber.Name : dbProduct.ProductNumber.Name,
+                ProductNumber = dbProduct.ProductNumber.Name != updatedProduct.ProductName ? existingProductName.Name : dbProduct.ProductNumber.Name,
                 DateTime = DateTime.Now,
             };
 
             dbProduct.Location = existingLocation;
 
-            dbProduct.ProductNumber = existingProductNumber;
+            dbProduct.ProductNumber = existingProductName;
 
             _context.Entry(dbProduct).State = EntityState.Modified;
 

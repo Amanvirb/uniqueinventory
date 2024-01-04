@@ -7,7 +7,7 @@ public class DeleteProduct
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
     {
-        private DataContext _context = context;
+        private readonly DataContext _context = context;
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {

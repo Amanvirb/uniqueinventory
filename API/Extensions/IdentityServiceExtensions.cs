@@ -52,7 +52,6 @@ public static class IdentityServiceExtensions
                 policy.Requirements.Add(new IsOrderRequirement());
             });
 
-
         //services.AddAuthorization(opt =>
         //{
         //    opt.AddPolicy("IsOrderOwner", policy =>

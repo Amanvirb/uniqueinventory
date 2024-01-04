@@ -28,7 +28,7 @@ public class EditProductName
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(x => x.Id == request.Product.Id, ct);
 
-            if (dbProduct is null) return null;
+            if (dbProduct is null) return Result<Unit>.Failure("Product name does not exist, please enter valid product");
 
             if (dbProduct.Name == request.Product.Name)
                 return Result<Unit>.Failure("Entered product name is same as previous");

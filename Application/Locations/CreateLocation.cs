@@ -1,6 +1,4 @@
-﻿using Application.Products;
-using FluentValidation;
-using static Application.Products.AddProduct;
+﻿using FluentValidation;
 
 namespace Application.Locations;
 public class CreateLocation

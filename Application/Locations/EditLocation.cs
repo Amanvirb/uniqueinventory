@@ -31,7 +31,7 @@ public class EditLocation
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(x => x.Id == request.Location.Id, ct);
 
-            if (dbLocation is null) return null;
+            if (dbLocation is null) return Result<Unit>.Failure("Location does not exist");
 
             if (dbLocation.Name == updatedLocation)
                 return Result<Unit>.Failure("Entered location name is same as previous");

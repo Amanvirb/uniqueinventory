@@ -20,12 +20,12 @@ public class ProductDetail
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<ProductDto>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<ProductDto>> Handle(Query request, CancellationToken ct)
         {
             var product = await _context.Products
                 .Include(x => x.Location)
                 .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+                 .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
 
             if (product is null) return Result<ProductDto>.Failure("Product not found");
 

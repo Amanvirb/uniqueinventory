@@ -10,7 +10,6 @@ public class ProductNameDetail
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-
         public async Task<Result<ProductNumberDto>> Handle(Query request, CancellationToken ct)
         {
             var product = await _context.ProductNumbers
@@ -18,7 +17,7 @@ public class ProductNameDetail
                 .ProjectTo<ProductNumberDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(x => x.Name == request.Name, ct);
 
-            if (product is null) return null;
+            if (product is null) return Result<ProductNumberDto>.Failure("Produt does not exist");
 
             return Result<ProductNumberDto>.Success(product);
 

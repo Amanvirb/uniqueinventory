@@ -7,13 +7,9 @@ using System.Text;
 
 namespace API.Services;
 
-public class TokenService
+public class TokenService(IConfiguration config)
 {
-    private readonly IConfiguration _config;
-    public TokenService(IConfiguration config)
-    {
-        _config = config;
-    }
+    private readonly IConfiguration _config = config;
 
     public string CreateToken(AppUser user, IList<Claim> userClaims, IList<string> roles)
     {

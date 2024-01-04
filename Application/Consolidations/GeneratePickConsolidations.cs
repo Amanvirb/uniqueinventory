@@ -20,7 +20,7 @@ public class GeneratePickConsolidations
              .Include(x => x.ProductNumber)
              .Where(x => x.ProductNumber.Name.Contains(productName)
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
-             .ToListAsync();
+             .ToListAsync(ct);
 
             var output = UtilHelper.GenConsolidatePick(productName, dbProducts);
 

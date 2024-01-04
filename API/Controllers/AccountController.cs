@@ -8,16 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class AccountController : BaseApiController
+    public class AccountController(UserManager<AppUser> userManager, TokenService tokenService) : BaseApiController
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly TokenService _tokenService;
-
-        public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
-        {
-            _userManager = userManager;
-            _tokenService = tokenService;
-        }
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly TokenService _tokenService = tokenService;
 
         [AllowAnonymous]
         [HttpPost("login")]

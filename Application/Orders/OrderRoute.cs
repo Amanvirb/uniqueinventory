@@ -14,15 +14,15 @@ public class OrderRoute
 
             var output = new List<OrderRouteDto>();
 
-            List<Product> orderedProducts = new();
+            List<Product> orderedProducts = [];
 
             var dbOrder = await _context.Orders
                 .Include(a => a.AppUser)
                 .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductNumber)
                 .FirstOrDefaultAsync(x =>x.OrderId == request.OrderId, ct);
 
-            if (dbOrder is null) return null;
-            
+            if (dbOrder is null) return Result<List<OrderRouteDto>>.Failure("Order does not exist");
+
             foreach (var product in dbOrder.OrderDetails)
             {
                 var products = await _context.Products
