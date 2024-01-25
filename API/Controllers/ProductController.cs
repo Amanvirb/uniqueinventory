@@ -11,6 +11,13 @@ public class ProductController : BaseApiController
         return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
     }
 
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPost("AddProducts")]
+    public async Task<IActionResult> AddProducts(ICollection<ProductDto> products)
+    {
+        return HandleResult(await Mediator.Send(new AddProducts.AddProductsCommand { Products = products }));
+    }
+
     [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetProductList()

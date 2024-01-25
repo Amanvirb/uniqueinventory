@@ -13,16 +13,20 @@ public static class ApplicationServiceExtensions
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-       
 
         services.AddCors(opt =>
         {
             opt.AddPolicy("CorsPolicy", policy =>
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                policy
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithExposedHeaders("WWW-Authenticate")
+                .WithOrigins("http://localhost:3000", "http://localhost:3001", "https://localhost:3000");
             });
         });
-      
+
         services.AddFluentValidationAutoValidation()
                .AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<ProductValidator>();
