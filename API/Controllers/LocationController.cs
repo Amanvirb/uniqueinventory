@@ -6,6 +6,7 @@ namespace API.Controllers;
 [Authorize(Roles = "SuperAdmin,Admin,Employee")]
 public class LocationController : BaseApiController
 {
+    [AllowAnonymous]
     [HttpPost] 
     public async Task<IActionResult> CreateLocation(AddLocationDto location)
     {

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain;
+using FluentValidation;
 
 namespace Application.Products;
 
@@ -6,15 +7,15 @@ public class AddProducts
 {
     public class AddProductsCommand : IRequest<Result<Unit>>
     {
-    public ICollection<ProductDto> Products { get; set; } = new List<ProductDto>();
+        public AddScannedQRDto Product { get; set; }
 
-}
+    }
 
-public class CommandValidator : AbstractValidator<AddProductsCommand>
+    public class CommandValidator : AbstractValidator<AddProductsCommand>
     {
         //public CommandValidator()
         //{
-            
+
         //    RuleFor(x => x.Products ).SetValidator(new ProductValidator());
         //}
     }
@@ -27,13 +28,9 @@ public class CommandValidator : AbstractValidator<AddProductsCommand>
         {
             bool result;
 
-            foreach (var product in request.Products)
-            {
-                var newProduct = product;
-            
+            var newProduct = request.Product;
+
             newProduct.LocationName = newProduct.LocationName.Trim().ToUpper();
-            newProduct.ProductNumberName = newProduct.ProductNumberName.Trim().ToUpper();
-            newProduct.SerialNumber = newProduct.SerialNumber.Trim().ToUpper();
 
             var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName, ct);
 
@@ -48,56 +45,67 @@ public class CommandValidator : AbstractValidator<AddProductsCommand>
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            var productNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.ProductNumberName,
-               ct);
+            List<ProductNumber> dbProductNames = [];
 
-            if (productNumber is null)
+            foreach (var pname in newProduct.Products.Select(x => x.ProductName).Distinct())
             {
-                productNumber = new ProductNumber
+                ProductNumber productName = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == pname, ct);
+
+                if (productName is null)
                 {
-                    Name = newProduct.ProductNumberName,
-                };
-                _context.ProductNumbers.Add(productNumber);
-                result = await _context.SaveChangesAsync(ct) > 0;
-                if (!result) return Result<Unit>.Failure("Failed to add Product");
+                    productName = new ProductNumber
+                    {
+                        Name = pname,
+                    };
+                    _context.ProductNumbers.Add(productName);
+                    result = await _context.SaveChangesAsync(ct) > 0;
+                    if (!result) return Result<Unit>.Failure("Failed to add Product Name");
+                }
+                dbProductNames.Add(productName);
             }
 
-            var existingProduct = await _context.Products
-               .Include(x => x.Location)
-               .Include(x => x.ProductNumber)
-               .FirstOrDefaultAsync(x => x.SerialNumber == newProduct.SerialNumber, ct);
-
-            if (existingProduct is not null)
+            foreach (var product in newProduct.Products)
             {
-                var previousProduct = new SerialNumberHistory
+
+                var existingProduct = await _context.Products
+                   .Include(x => x.Location)
+                   .Include(x => x.ProductNumber)
+                   .FirstOrDefaultAsync(x => x.SerialNumber == product.SerialNo, ct);
+
+                if (existingProduct is not null)
                 {
-                    SerialNumber = existingProduct.SerialNumber,
-                    LocationName = existingProduct.Location.Name,
-                    ProductNumberName = existingProduct.ProductNumber.Name,
-                    DateTime = DateTime.Now,
-                };
-                _context.SerialNumberHistories.Add(previousProduct);
+                    var previousProduct = new SerialNumberHistory
+                    {
+                        SerialNumber = existingProduct.SerialNumber,
+                        LocationName = existingProduct.Location.Name,
+                        ProductNumberName = existingProduct.ProductNumber.Name,
+                        DateTime = DateTime.Now,
+                    };
+                    _context.SerialNumberHistories.Add(previousProduct);
 
-                existingProduct.ProductNumber = productNumber;
-                existingProduct.Location = location;
+                    existingProduct.Location = location;
 
-                _context.Entry(existingProduct).State = EntityState.Modified;
-            }
-            else
-            {
-                var dbNewProduct = new Product
+                    _context.Entry(existingProduct).State = EntityState.Modified;
+                    result = await _context.SaveChangesAsync(ct) > 0;
+                    if (!result) return Result<Unit>.Failure("Failed to add Product in History");
+
+                }
+                else
                 {
-                    SerialNumber = newProduct.SerialNumber,
-                    ProductNumber = productNumber,
-                    Location = location,
-                };
+                    var dbNewProduct = new Product
+                    {
+                        SerialNumber = product.SerialNo,
+                        ProductNumber = dbProductNames.FirstOrDefault(x => x.Name == product.ProductName),
+                        Location = location,
+                    };
 
-                _context.Products.Add(dbNewProduct);
+                    _context.Products.Add(dbNewProduct);
+                    result = await _context.SaveChangesAsync(ct) > 0;
+                    if (!result) return Result<Unit>.Failure("Failed to add Product");
+
+                }
+
             }
-            }
-            
-            result = await _context.SaveChangesAsync(ct) > 0;
-            if (!result) return Result<Unit>.Failure("Failed to add Product");
 
             return Result<Unit>.Success(Unit.Value);
         }

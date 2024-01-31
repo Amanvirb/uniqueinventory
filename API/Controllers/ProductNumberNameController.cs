@@ -7,7 +7,8 @@ namespace API.Controllers;
 public class ProductNumberNameController : BaseApiController
 {
 
-    [Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> CreateProductNumber(CommonDto name)
     {

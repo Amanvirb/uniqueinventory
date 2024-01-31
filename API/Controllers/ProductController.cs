@@ -4,18 +4,20 @@ namespace API.Controllers;
 public class ProductController : BaseApiController
 {
 
-    [Authorize(Roles = "SuperAdmin")]
-    [HttpPost]
-    public async Task<IActionResult> AddProduct(ProductDto product)
-    {
-        return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
-    }
+    //[Authorize(Roles = "SuperAdmin")]
+    //[AllowAnonymous]
+    //[HttpPost]
+    //public async Task<IActionResult> AddProduct(ProductDto product)
+    //{
+    //    return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
+    //}
 
-    [Authorize(Roles = "SuperAdmin")]
-    [HttpPost("AddProducts")]
-    public async Task<IActionResult> AddProducts(ICollection<ProductDto> products)
+    //[Authorize(Roles = "SuperAdmin")]
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> AddProducts(AddScannedQRDto product)
     {
-        return HandleResult(await Mediator.Send(new AddProducts.AddProductsCommand { Products = products }));
+        return HandleResult(await Mediator.Send(new AddProducts.AddProductsCommand { Product = product }));
     }
 
     [AllowAnonymous]
