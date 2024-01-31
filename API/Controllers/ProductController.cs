@@ -15,7 +15,7 @@ public class ProductController : BaseApiController
     //[Authorize(Roles = "SuperAdmin")]
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> AddProducts(AddScannedQRDto product)
+    public async Task<IActionResult> AddProducts(ScannedQRDto product)
     {
         return HandleResult(await Mediator.Send(new AddProducts.AddProductsCommand { Product = product }));
     }

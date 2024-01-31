@@ -7,17 +7,16 @@ public class AddProducts
 {
     public class AddProductsCommand : IRequest<Result<Unit>>
     {
-        public AddScannedQRDto Product { get; set; }
+        public ScannedQRDto Product { get; set; }
 
     }
 
     public class CommandValidator : AbstractValidator<AddProductsCommand>
     {
-        //public CommandValidator()
-        //{
-
-        //    RuleFor(x => x.Products ).SetValidator(new ProductValidator());
-        //}
+        public CommandValidator()
+        {
+            RuleFor(x => x.Product).SetValidator(new ScannedProductValidator());
+        }
     }
 
     public class Handler(DataContext context) : IRequestHandler<AddProductsCommand, Result<Unit>>
