@@ -72,7 +72,11 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Slug = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false),
+                    Tags = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,6 +92,7 @@ namespace Persistence.Migrations
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
                     Location = table.Column<string>(type: "TEXT", nullable: true),
                     ProductNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    Remarks = table.Column<string>(type: "TEXT", nullable: true),
                     DateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -104,6 +109,7 @@ namespace Persistence.Migrations
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: true),
                     ProductNumberName = table.Column<string>(type: "TEXT", nullable: true),
                     LocationName = table.Column<string>(type: "TEXT", nullable: true),
+                    Remarks = table.Column<string>(type: "TEXT", nullable: true),
                     DateTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>

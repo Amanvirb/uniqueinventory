@@ -179,7 +179,19 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tags")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -200,6 +212,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
@@ -248,6 +263,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductNumberName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")

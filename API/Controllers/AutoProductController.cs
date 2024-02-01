@@ -1,4 +1,6 @@
-﻿namespace API.Controllers;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace API.Controllers;
 
 public class AutoProductController : BaseApiController
 {
@@ -38,6 +40,7 @@ public class AutoProductController : BaseApiController
 
     }
 
+    [AllowAnonymous]
     [HttpPost("AddProductsAuto")]
     public async Task<IActionResult> AddProductsAuto()
     {

@@ -3,22 +3,22 @@ public class ProductList
 {
     public class Query : IRequest<Result<List<ProductDto>>>
     {
-        public ProductSearchParamsDto Search { get; set; }
-    }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ProductDto>>>
-    {
-        private readonly DataContext _context = context;
-        private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken ct)
+        public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ProductDto>>>
         {
-            var productList = await _context.Products
-                .Include(x => x.ProductNumber)
-                .Include(x => x.Location)
-                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(ct);
+            private readonly DataContext _context = context;
+            private readonly IMapper _mapper = mapper;
 
-            return Result<List<ProductDto>>.Success(productList);
+            public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken ct)
+            {
+                var productList = await _context.Products
+                    .Include(x => x.ProductNumber)
+                    .Include(x => x.Location)
+                    .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(ct);
+
+                return Result<List<ProductDto>>.Success(productList);
+            }
         }
     }
 

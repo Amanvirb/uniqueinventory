@@ -25,9 +25,6 @@ public class AddProduct
         {
             bool result;
             var newProduct = request.Product;
-            newProduct.LocationName = newProduct.LocationName.Trim().ToUpper();
-            newProduct.ProductNumberName = newProduct.ProductNumberName.Trim().ToUpper();
-            newProduct.SerialNumber = newProduct.SerialNumber.Trim().ToUpper();
 
             var location = await _context.Locations.FirstOrDefaultAsync(x => x.Name == newProduct.LocationName, ct);
 

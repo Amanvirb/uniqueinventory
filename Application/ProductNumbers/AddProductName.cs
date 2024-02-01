@@ -1,18 +1,19 @@
 ﻿using Application.Locations;
+using Application.ProductNumbers.Dtoæ;
 using FluentValidation;
 
 namespace Application.ProductNumbers;
-public class AddProductNumber
+public class AddProductName
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public CommonDto Name { get; set; }
+        public AddProductNameDto Product { get; set; }
     }
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.Name).SetValidator(new CommonValidator());
+            RuleFor(x => x.Product).SetValidator(new AddProductNameValidator());
         }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>
@@ -21,7 +22,7 @@ public class AddProductNumber
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var name = request.Name.Name.Trim().ToUpper();
+            var name = request.Product.Name.Trim().ToUpper();
 
             var existingProductNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == name, ct);
 

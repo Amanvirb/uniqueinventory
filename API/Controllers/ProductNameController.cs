@@ -1,18 +1,19 @@
 ﻿using Application.Locations;
 using Application.ProductNumbers;
+using Application.ProductNumbers.Dtoæ;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
-public class ProductNumberNameController : BaseApiController
+public class ProductNameController : BaseApiController
 {
 
     //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> CreateProductNumber(CommonDto name)
+    public async Task<IActionResult> CreateProductNumber(AddProductNameDto name)
     {
-        return HandleResult(await Mediator.Send(new AddProductNumber.Command { Name = name }));
+        return HandleResult(await Mediator.Send(new AddProductName.Command { Product = name }));
     }
 
     [AllowAnonymous]
@@ -31,7 +32,7 @@ public class ProductNumberNameController : BaseApiController
 
     [Authorize(Roles = "SuperAdmin,Admin,Employee")]
     [HttpPut]
-    public async Task<IActionResult> UpdateProductNameDetail(CommonDto product)
+    public async Task<IActionResult> UpdateProductNameDetail(AddProductNameDto product)
     {
         return HandleResult(await Mediator.Send(new EditProductName.Command { Product = product }));
     }

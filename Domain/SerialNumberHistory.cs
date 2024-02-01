@@ -5,5 +5,7 @@ public class SerialNumberHistory
     public string SerialNumber { get; set; }
     public string ProductNumberName { get; set; }
     public string LocationName { get; set; }
+    public string Remarks { get; set; }
+
     public DateTime DateTime { get; set; }
 }

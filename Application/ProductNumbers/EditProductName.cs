@@ -1,4 +1,5 @@
 ﻿using Application.Locations;
+using Application.ProductNumbers.Dtoæ;
 using FluentValidation;
 
 namespace Application.Products;
@@ -7,13 +8,13 @@ public class EditProductName
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public CommonDto Product { get; set; }
+        public AddProductNameDto Product { get; set; }
     }
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.Product).SetValidator(new CommonValidator());
+            RuleFor(x => x.Product).SetValidator(new AddProductNameValidator());
         }
     }
     public class Handler(DataContext context) : IRequestHandler<Command, Result<Unit>>

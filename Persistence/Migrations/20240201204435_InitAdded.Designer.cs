@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231227151441_InitAdded")]
+    [Migration("20240201204435_InitAdded")]
     partial class InitAdded
     {
         /// <inheritdoc />
@@ -182,7 +182,19 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tags")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -203,6 +215,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
@@ -251,6 +266,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductNumberName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Remarks")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SerialNumber")
