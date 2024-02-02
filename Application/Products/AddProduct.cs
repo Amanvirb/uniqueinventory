@@ -60,14 +60,17 @@ public class AddProduct
 
             if (existingProduct is not null)
             {
-                var previousProduct = new SerialNumberHistory
+                var previousProduct = new ProductUpdateHistory
                 {
                     SerialNumber = existingProduct.SerialNumber,
-                    LocationName = existingProduct.Location.Name,
-                    ProductNumberName = existingProduct.ProductNumber.Name,
+                    Location = existingProduct.Location.Name,
+                    ProductNumber = existingProduct.ProductNumber.Name,
+                    Remarks = "Serisl number repeated",
                     DateTime = DateTime.Now,
                 };
-                _context.SerialNumberHistories.Add(previousProduct);
+                //_context.SerialNumberHistories.Add(previousProduct);
+                _context.ProductUpdateHistories.Add(previousProduct);
+
 
                 existingProduct.ProductNumber = productNumber;
                 existingProduct.Location = location;
