@@ -5,16 +5,16 @@ public class ProductController : BaseApiController
 {
 
     //[Authorize(Roles = "SuperAdmin")]
-    //[AllowAnonymous]
-    //[HttpPost]
-    //public async Task<IActionResult> AddProduct(ProductDto product)
-    //{
-    //    return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
-    //}
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> AddProduct(ProductDto product)
+    {
+        return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
+    }
 
     //[Authorize(Roles = "SuperAdmin")]
     [AllowAnonymous]
-    [HttpPost]
+    [HttpPost("Scan Products")]
     public async Task<IActionResult> AddProducts(ScannedQRDto product)
     {
         return HandleResult(await Mediator.Send(new AddProducts.AddProductsCommand { Product = product }));
