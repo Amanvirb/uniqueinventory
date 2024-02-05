@@ -8,7 +8,7 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Location> Locations { get; set; }
-    public DbSet<ProductNumber> ProductNumbers { get; set; }
+    public DbSet<ProductName> ProductNames { get; set; }
     public DbSet<ProductUpdateHistory> ProductUpdateHistories { get; set; }
     public DbSet<SerialNumberHistory> SerialNumberHistories { get; set; }
 
@@ -24,7 +24,7 @@ public class DataContext(DbContextOptions<DataContext> options) : IdentityDbCont
         //    p.Property(x => x.SerialNumber)
         //    .UseCollation("SQL_Latin1_General_CP1_CS_AS");
         //});
-        //builder.Entity<ProductNumber>(p =>
+        //builder.Entity<ProductName>(p =>
         //{
         //    p.Property(x => x.Name)
         //    .UseCollation("SQL_Latin1_General_CP1_CS_AS");

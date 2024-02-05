@@ -16,7 +16,7 @@ public class CreateOrder
         {
             bool result;            
 
-            var productName = await _context.ProductNumbers
+            var productName = await _context.ProductNames
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(p => p.Name == request.Order.ProductName.Trim().ToUpper(), ct);
 
@@ -28,7 +28,7 @@ public class CreateOrder
             var orderDetail = new OrderDetail
             {
                 Quantity = request.Order.Quantity,
-                ProductNumber = productName,
+                ProductName = productName,
             };
 
             var order = new Order

@@ -1,8 +1,8 @@
 ﻿using Application.Locations;
-using Application.ProductNumbers.Dtoæ;
+using Application.ProductNames.Dtoæ;
 using FluentValidation;
 
-namespace Application.ProductNumbers;
+namespace Application.ProductNames;
 public class AddProductName
 {
     public class Command : IRequest<Result<Unit>>
@@ -24,14 +24,14 @@ public class AddProductName
         {
             var name = request.Product.Name.Trim().ToUpper();
 
-            var existingProductNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == name, ct);
+            var existingProductName = await _context.ProductNames.FirstOrDefaultAsync(x => x.Name == name, ct);
 
-            if (existingProductNumber is not null) return Result<Unit>.Failure("Product Name already exists");
+            if (existingProductName is not null) return Result<Unit>.Failure("Product Name already exists");
 
-            _context.ProductNumbers.Add(new ProductNumber { Name = name});
+            _context.ProductNames.Add(new ProductName { Name = name});
 
             var result = await _context.SaveChangesAsync(ct) > 0;
-            if (!result) return Result<Unit>.Failure("Cannot Add Part Number");
+            if (!result) return Result<Unit>.Failure("Cannot Add Product Name");
 
             return Result<Unit>.Success(Unit.Value);
         }

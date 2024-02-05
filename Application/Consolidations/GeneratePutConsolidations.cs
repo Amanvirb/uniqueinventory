@@ -10,12 +10,12 @@ public class GeneratePutConsolidations
         private readonly DataContext _context = context;
         public async Task<Result<List<ConsolidationPutDto>>> Handle(Query request, CancellationToken ct)
         {
-            var productName = request.SearchParams.ProductNumberName;
+            var productName = request.SearchParams.ProductName;
 
             var dbProducts = await _context.Products
              .Include(x => x.Location)
-             .Include(x => x.ProductNumber)
-             .Where(x => x.ProductNumber.Name.Contains(productName)
+             .Include(x => x.ProductName)
+             .Where(x => x.ProductName.Name.Contains(productName)
               && x.Location.Products.Count >= request.SearchParams.MaxUnit)
              .ToListAsync(ct);
 
@@ -35,7 +35,7 @@ public class GeneratePutConsolidations
                 output.Add(new()
                 {
                     Location = location.Name,
-                    EneteredProductNumberTotalCount = dbProducts.Where(x => x.Location == location).Count(),
+                    EneteredProductNameTotalCount = dbProducts.Where(x => x.Location == location).Count(),
                     EmptySpace = capacity - dbTotalLocationProducts.Count,
                 });
 

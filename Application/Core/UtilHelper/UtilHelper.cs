@@ -21,7 +21,7 @@ public static class UtilHelper
             {
                 LocationName = location.Name,
                 Serials = serials,
-                ProductNumberName = productName,
+                ProductName = productName,
             });
 
         }

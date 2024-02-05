@@ -134,7 +134,7 @@ namespace Persistence.Migrations
                     b.Property<string>("OrderId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("ProductNumberId")
+                    b.Property<int>("ProductNameId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantity")
@@ -144,7 +144,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductNumberId");
+                    b.HasIndex("ProductNameId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -158,7 +158,7 @@ namespace Persistence.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ProductNumberId")
+                    b.Property<int>("ProductNameId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SerialNumber")
@@ -168,12 +168,12 @@ namespace Persistence.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("ProductNumberId");
+                    b.HasIndex("ProductNameId");
 
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Domain.ProductNumber", b =>
+            modelBuilder.Entity("Domain.ProductName", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -196,7 +196,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductNumbers");
+                    b.ToTable("ProductNames");
                 });
 
             modelBuilder.Entity("Domain.ProductUpdateHistory", b =>
@@ -211,7 +211,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProductNumber")
+                    b.Property<string>("ProductName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Remarks")
@@ -262,7 +262,7 @@ namespace Persistence.Migrations
                     b.Property<string>("LocationName")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProductNumberName")
+                    b.Property<string>("ProductName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Remarks")
@@ -419,15 +419,15 @@ namespace Persistence.Migrations
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("Domain.ProductNumber", "ProductNumber")
+                    b.HasOne("Domain.ProductName", "ProductName")
                         .WithMany()
-                        .HasForeignKey("ProductNumberId")
+                        .HasForeignKey("ProductNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
 
-                    b.Navigation("ProductNumber");
+                    b.Navigation("ProductName");
                 });
 
             modelBuilder.Entity("Domain.Product", b =>
@@ -438,15 +438,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.ProductNumber", "ProductNumber")
+                    b.HasOne("Domain.ProductName", "ProductName")
                         .WithMany("Products")
-                        .HasForeignKey("ProductNumberId")
+                        .HasForeignKey("ProductNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Location");
 
-                    b.Navigation("ProductNumber");
+                    b.Navigation("ProductName");
                 });
 
             modelBuilder.Entity("Domain.RefreshToken", b =>
@@ -526,7 +526,7 @@ namespace Persistence.Migrations
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("Domain.ProductNumber", b =>
+            modelBuilder.Entity("Domain.ProductName", b =>
                 {
                     b.Navigation("Products");
                 });

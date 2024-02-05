@@ -27,13 +27,13 @@ public class EditProduct
 
             var dbProduct = await _context.Products
                 .Include(x => x.Location)
-                .Include(x => x.ProductNumber)
+                .Include(x => x.ProductName)
                 .FirstOrDefaultAsync(x => x.Id == updatedProduct.Id, ct);
 
             if (dbProduct is null) return Result<Unit>.Failure("Product not found");
 
             if (dbProduct.Location.Name == updatedProduct.LocationName
-                && dbProduct.ProductNumber.Name == updatedProduct.ProductName)
+                && dbProduct.ProductName.Name == updatedProduct.ProductName)
                 return Result<Unit>.Failure("Entered product name and location Name is same as previous");
 
             var existingLocation = await _context.Locations
@@ -41,7 +41,7 @@ public class EditProduct
 
             if (existingLocation is null) return Result<Unit>.Failure("Location does not exist");
 
-            var existingProductName = await _context.ProductNumbers
+            var existingProductName = await _context.ProductNames
                 .FirstOrDefaultAsync(x => x.Name == updatedProduct.ProductName, ct);
 
             if (existingProductName is null) return Result<Unit>.Failure("Product name does not exist");
@@ -50,13 +50,13 @@ public class EditProduct
             {
                 SerialNumber = dbProduct.SerialNumber,
                 Location = dbProduct.Location.Name != updatedProduct.LocationName ? existingLocation.Name : dbProduct.Location.Name,
-                ProductNumber = dbProduct.ProductNumber.Name != updatedProduct.ProductName ? existingProductName.Name : dbProduct.ProductNumber.Name,
+                ProductName = dbProduct.ProductName.Name != updatedProduct.ProductName ? existingProductName.Name : dbProduct.ProductName.Name,
                 DateTime = DateTime.Now,
             };
 
             dbProduct.Location = existingLocation;
 
-            dbProduct.ProductNumber = existingProductName;
+            dbProduct.ProductName = existingProductName;
 
             _context.Entry(dbProduct).State = EntityState.Modified;
 

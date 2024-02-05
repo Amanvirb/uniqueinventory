@@ -1,7 +1,7 @@
 ﻿namespace Application.Extensions;
 public static class ProductExtensions
 {
-    public static IQueryable<ProductNumberDto> Sort(this IQueryable<ProductNumberDto> query, string orderBy)
+    public static IQueryable<ProductNameDto> Sort(this IQueryable<ProductNameDto> query, string orderBy)
     {
         if (orderBy == null) return query;
         query = orderBy switch
@@ -21,12 +21,12 @@ public static class ProductExtensions
         }
         if (!string.IsNullOrEmpty(Params.ProductName) && !string.IsNullOrEmpty(Params.Location))
         {
-            query = query.Where(p => p.ProductNumber.Name.Contains(Params.ProductName)
+            query = query.Where(p => p.ProductName.Name.Contains(Params.ProductName)
                       && p.Location.Name == Params.Location);
             return query;
         }
         if (!string.IsNullOrEmpty(Params.ProductName))
-            query = query.Where(p => p.ProductNumber.Name.Contains(Params.ProductName));
+            query = query.Where(p => p.ProductName.Name.Contains(Params.ProductName));
 
         if (!string.IsNullOrEmpty(Params.Location))
             query = query.Where(p => p.Location.Name == Params.Location);

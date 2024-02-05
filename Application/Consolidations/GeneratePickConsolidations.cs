@@ -13,12 +13,12 @@ public class GeneratePickConsolidations
 
         public async Task<Result<List<ConsolidationPickDto>>> Handle(Query request, CancellationToken ct)
         {
-            var productName = request.SearchParams.ProductNumberName;
+            var productName = request.SearchParams.ProductName;
 
             var dbProducts = await _context.Products
              .Include(x => x.Location)
-             .Include(x => x.ProductNumber)
-             .Where(x => x.ProductNumber.Name.Contains(productName)
+             .Include(x => x.ProductName)
+             .Where(x => x.ProductName.Name.Contains(productName)
                  && x.Location.Products.Count <= request.SearchParams.MaxUnit)
              .ToListAsync(ct);
 
