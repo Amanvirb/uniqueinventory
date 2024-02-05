@@ -39,23 +39,23 @@ public class AddProduct
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            var productNumber = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == newProduct.ProductNumberName,
+            var ProductName = await _context.ProductNames.FirstOrDefaultAsync(x => x.Name == newProduct.ProductName,
                ct);
 
-            if (productNumber is null)
+            if (ProductName is null)
             {
-                productNumber = new ProductNumber
+                ProductName = new ProductName
                 {
-                    Name = newProduct.ProductNumberName,
+                    Name = newProduct.ProductName,
                 };
-                _context.ProductNumbers.Add(productNumber);
+                _context.ProductNames.Add(ProductName);
                 result = await _context.SaveChangesAsync(ct) > 0;
                 if (!result) return Result<Unit>.Failure("Failed to add Product");
             }
 
             var existingProduct = await _context.Products
                .Include(x => x.Location)
-               .Include(x => x.ProductNumber)
+               .Include(x => x.ProductName)
                .FirstOrDefaultAsync(x => x.SerialNumber == newProduct.SerialNumber, ct);
 
             if (existingProduct is not null)
@@ -64,7 +64,7 @@ public class AddProduct
                 {
                     SerialNumber = existingProduct.SerialNumber,
                     Location = existingProduct.Location.Name,
-                    ProductNumber = existingProduct.ProductNumber.Name,
+                    ProductName = existingProduct.ProductName.Name,
                     Remarks = "Serisl number repeated",
                     DateTime = DateTime.Now,
                 };
@@ -72,7 +72,7 @@ public class AddProduct
                 _context.ProductUpdateHistories.Add(previousProduct);
 
 
-                existingProduct.ProductNumber = productNumber;
+                existingProduct.ProductName = ProductName;
                 existingProduct.Location = location;
 
                 _context.Entry(existingProduct).State = EntityState.Modified;
@@ -82,7 +82,7 @@ public class AddProduct
                 var dbNewProduct = new Product
                 {
                     SerialNumber = newProduct.SerialNumber,
-                    ProductNumber = productNumber,
+                    ProductName = ProductName,
                     Location = location,
                 };
 

@@ -64,7 +64,7 @@ public class AutoProductController : BaseApiController
             output.Add(new()
             {
                 SerialNumber = "SerialNo" + i.ToString(),
-                ProductNumberName = "ProductNumber" + rnd.Next(1, 250).ToString(),
+                ProductName = "ProductName" + rnd.Next(1, 250).ToString(),
                 LocationName = "Location" + rnd.Next(1, 100).ToString()
             });
         }

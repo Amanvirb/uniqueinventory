@@ -44,19 +44,19 @@ public class AddProducts
                 if (!result) return Result<Unit>.Failure("Can not create Location");
             }
 
-            List<ProductNumber> dbProductNames = [];
+            List<ProductName> dbProductNames = [];
 
             foreach (var pname in newProduct.Products.Select(x => x.ProductName).Distinct())
             {
-                ProductNumber productName = await _context.ProductNumbers.FirstOrDefaultAsync(x => x.Name == pname, ct);
+                ProductName productName = await _context.ProductNames.FirstOrDefaultAsync(x => x.Name == pname, ct);
 
                 if (productName is null)
                 {
-                    productName = new ProductNumber
+                    productName = new ProductName
                     {
                         Name = pname,
                     };
-                    _context.ProductNumbers.Add(productName);
+                    _context.ProductNames.Add(productName);
                     result = await _context.SaveChangesAsync(ct) > 0;
                     if (!result) return Result<Unit>.Failure("Failed to add Product Name");
                 }
@@ -68,7 +68,7 @@ public class AddProducts
 
                 var existingProduct = await _context.Products
                    .Include(x => x.Location)
-                   .Include(x => x.ProductNumber)
+                   .Include(x => x.ProductName)
                    .FirstOrDefaultAsync(x => x.SerialNumber == product.SerialNo, ct);
 
                 if (existingProduct is not null)
@@ -77,7 +77,7 @@ public class AddProducts
                     {
                         SerialNumber = existingProduct.SerialNumber,
                         LocationName = existingProduct.Location.Name,
-                        ProductNumberName = existingProduct.ProductNumber.Name,
+                        ProductName = existingProduct.ProductName.Name,
                         DateTime = DateTime.Now,
                     };
                     _context.SerialNumberHistories.Add(previousProduct);
@@ -94,7 +94,7 @@ public class AddProducts
                     var dbNewProduct = new Product
                     {
                         SerialNumber = product.SerialNo,
-                        ProductNumber = dbProductNames.FirstOrDefault(x => x.Name == product.ProductName),
+                        ProductName = dbProductNames.FirstOrDefault(x => x.Name == product.ProductName),
                         Location = location,
                     };
 

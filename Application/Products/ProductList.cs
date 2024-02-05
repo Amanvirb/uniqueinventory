@@ -12,7 +12,7 @@ public class ProductList
             public async Task<Result<List<ProductDto>>> Handle(Query request, CancellationToken ct)
             {
                 var productList = await _context.Products
-                    .Include(x => x.ProductNumber)
+                    .Include(x => x.ProductName)
                     .Include(x => x.Location)
                     .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(ct);

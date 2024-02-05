@@ -1,5 +1,5 @@
 ﻿namespace Application.Dto;
-public class ProductNumberDto
+public class ProductNameDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

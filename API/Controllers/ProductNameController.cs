@@ -1,6 +1,6 @@
 ﻿using Application.Locations;
-using Application.ProductNumbers;
-using Application.ProductNumbers.Dtoæ;
+using Application.ProductNames;
+using Application.ProductNames.Dtoæ;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
@@ -11,16 +11,16 @@ public class ProductNameController : BaseApiController
     //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> CreateProductNumber(AddProductNameDto name)
+    public async Task<IActionResult> CreateProductName(AddProductNameDto name)
     {
         return HandleResult(await Mediator.Send(new AddProductName.Command { Product = name }));
     }
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetProductNumberNameList()
+    public async Task<IActionResult> GetProductNameList()
     {
-        return HandleResult(await Mediator.Send(new ProductNumberNameList.Query()));
+        return HandleResult(await Mediator.Send(new ProductNameList.Query()));
     }
 
     [AllowAnonymous]

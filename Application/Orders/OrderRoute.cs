@@ -18,7 +18,7 @@ public class OrderRoute
 
             var dbOrder = await _context.Orders
                 .Include(a => a.AppUser)
-                .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductNumber)
+                .Include(o=>o.OrderDetails).ThenInclude(x => x.ProductName)
                 .FirstOrDefaultAsync(x =>x.OrderId == request.OrderId, ct);
 
             if (dbOrder is null) return Result<List<OrderRouteDto>>.Failure("Order does not exist");
@@ -27,8 +27,8 @@ public class OrderRoute
             {
                 var products = await _context.Products
                       .Include(x => x.Location)
-                      .Include(x => x.ProductNumber)
-                      .Where(x => x.ProductNumber == product.ProductNumber)
+                      .Include(x => x.ProductName)
+                      .Where(x => x.ProductName == product.ProductName)
                       .ToListAsync(ct);
 
                 orderedProducts.AddRange(products);
@@ -42,7 +42,7 @@ public class OrderRoute
                      .Where(x => x.Location.Name == location)
                      .ToList();
 
-                var productNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
+                var productNames = products.Select(x => x.ProductName.Name).Distinct().ToList();
 
                 var reqProd = new List<RequestedProductDto>();
 
@@ -50,9 +50,9 @@ public class OrderRoute
                 {
                     reqProd.Add(new()
                     {
-                        ProductNumberName = productName,
-                        AvailableProductNumberQuantity = products.Where(x => x.ProductNumber.Name == productName).Count(),
-                        ReqQty = dbOrder.OrderDetails.FirstOrDefault(x => x.ProductNumber.Name == productName).Quantity
+                        ProductName = productName,
+                        AvailableProductNameQuantity = products.Where(x => x.ProductName.Name == productName).Count(),
+                        ReqQty = dbOrder.OrderDetails.FirstOrDefault(x => x.ProductName.Name == productName).Quantity
                     });
                 }
 

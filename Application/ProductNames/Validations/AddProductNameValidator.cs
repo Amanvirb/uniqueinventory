@@ -1,4 +1,4 @@
-﻿using Application.ProductNumbers.Dtoæ;
+﻿using Application.ProductNames.Dtoæ;
 using FluentValidation;
 
 namespace Application.Locations;

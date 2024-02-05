@@ -1,4 +1,4 @@
-﻿namespace Application.Products;
+﻿namespace Application.ProductNames;
 public class DeleteProductName
 {
     public class Command : IRequest<Result<Unit>>
@@ -11,7 +11,7 @@ public class DeleteProductName
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var result = await _context.ProductNumbers
+            var result = await _context.ProductNames
                 .Where(x => x.Id == request.Id)
                 .ExecuteDeleteAsync(ct) > 0;
 

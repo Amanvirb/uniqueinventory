@@ -21,17 +21,17 @@ public class SearchProduct
 
             var query = _context.Products
                  .Include(x => x.Location)
-                 .Include(x => x.ProductNumber)
+                 .Include(x => x.ProductName)
                  .Search(param)
                  .AsQueryable();
 
             var products = await query.ToListAsync(ct);
 
-            var productNames = products.Select(x => x.ProductNumber.Name).Distinct().ToList();
+            var productNames = products.Select(x => x.ProductName.Name).Distinct().ToList();
 
             foreach (var ProductName in productNames)
             {
-                var selectedProducts = products.Where(x => x.ProductNumber.Name == ProductName).ToList();
+                var selectedProducts = products.Where(x => x.ProductName.Name == ProductName).ToList();
 
                 var selectedLocations = selectedProducts.Select(x => x.Location.Name).Distinct().ToList();
                

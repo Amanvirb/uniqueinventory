@@ -1,8 +1,8 @@
 ﻿using Application.Locations;
-using Application.ProductNumbers.Dtoæ;
+using Application.ProductNames.Dtoæ;
 using FluentValidation;
 
-namespace Application.Products;
+namespace Application.ProductNames;
 
 public class EditProductName
 {
@@ -25,7 +25,7 @@ public class EditProductName
         {
             bool result;
 
-             var dbProduct = await _context.ProductNumbers
+             var dbProduct = await _context.ProductNames
                 .Include(x => x.Products)
                 .FirstOrDefaultAsync(x => x.Id == request.Product.Id, ct);
 
@@ -34,7 +34,7 @@ public class EditProductName
             if (dbProduct.Name == request.Product.Name)
                 return Result<Unit>.Failure("Entered product name is same as previous");
 
-            result = await _context.ProductNumbers
+            result = await _context.ProductNames
                 .Where(x=>x.Id== request.Product.Id)
                 .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, request.Product.Name), ct) > 0;
 

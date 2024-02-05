@@ -2,7 +2,7 @@
 public class RequestedProductDto
 {
 
-    public string ProductNumberName { get; set; }
-    public int AvailableProductNumberQuantity { get; set; }
+    public string ProductName { get; set; }
+    public int AvailableProductNameQuantity { get; set; }
     public int ReqQty { get; set; }
 }

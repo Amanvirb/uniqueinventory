@@ -16,7 +16,7 @@ public class UpdateOrder
             if (request.Order.Quantity < 1)
             {
                 await _context.OrderDetails
-                    .Where(x => x.OrderId == request.Order.OrderId && x.ProductNumber.Name == product)
+                    .Where(x => x.OrderId == request.Order.OrderId && x.ProductName.Name == product)
                     .ExecuteDeleteAsync(ct);
 
                 return Result<Unit>.Success(Unit.Value);
@@ -24,21 +24,21 @@ public class UpdateOrder
 
             bool result;
             var dbOrder = await _context.Orders
-                .Include(o => o.OrderDetails).ThenInclude(p => p.ProductNumber)
+                .Include(o => o.OrderDetails).ThenInclude(p => p.ProductName)
                 .FirstOrDefaultAsync(x => x.OrderId == request.Order.OrderId
                 && !x.Confirmed, ct);
 
             if (dbOrder is null) return Result<Unit>.Failure("Order does not exist");
 
             var orderDetail = dbOrder.OrderDetails
-                .FirstOrDefault(x => x.ProductNumber.Name == product);
+                .FirstOrDefault(x => x.ProductName.Name == product);
 
             if (orderDetail is null)
             {
                 var newOrderDetails = new OrderDetail
                 {
                     Quantity = request.Order.Quantity,
-                    ProductNumber = new ProductNumber { Name = product },
+                    ProductName = new ProductName { Name = product },
                     Order = dbOrder,
                 };
 
