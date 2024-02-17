@@ -33,6 +33,17 @@ public static class ProductExtensions
 
         return query;
     }
+    public static IQueryable<ProductName> SearchProductName(this IQueryable<ProductName> query, ProductNameSearchParams Params)
+    {
+        if (!string.IsNullOrEmpty(Params.ProductName))
+        {
+            query = query.Where(p => p.Name.Contains(Params.ProductName));
+            return query;
+        }
+
+        return query;
+    }
+
 
     //public static IQueryable<BookDetailDto> Filter(this IQueryable<BookDetailDto> query, string brands, string types)
     //{

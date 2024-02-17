@@ -1,23 +1,48 @@
-﻿namespace Application.ProductNames;
+﻿using Application.Core;
+using Application.Extensions;
+using Application.ProductNames.Dtoæ;
+using System.Collections.Generic;
+
+namespace Application.ProductNames;
 public class ProductNameList
 {
-    public class Query : IRequest<Result<List<ProductNameDto>>>
+    public class Query : IRequest<Result<List<AddProductNameDto>>>
     {
-        public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<ProductNameDto>>>
+        public ProductNameSearchParams Params { get; set; }
+    }
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<List<AddProductNameDto>>>
+    {
+        private readonly DataContext _context = context;
+        private readonly IMapper _mapper = mapper;
+
+        public async Task<Result<List<AddProductNameDto>>> Handle(Query request, CancellationToken ct)
         {
-            private readonly DataContext _context = context;
-            private readonly IMapper _mapper = mapper;
+            var output = new List<AddProductNameDto>();
 
-            public async Task<Result<List<ProductNameDto>>> Handle(Query request, CancellationToken ct)
+            var param = request.Params;
+
+            var query = _context.ProductNames
+                 .Include(x => x.Products).ThenInclude(x => x.Location)
+                 .SearchProductName(param)
+                 .AsQueryable();
+
+            var productNames = await query.ToListAsync(ct);
+
+            foreach (var ProductName in productNames)
             {
-                var ProductNames = await _context.ProductNames
-                    .Include(x => x.Products)
-                    .ProjectTo<ProductNameDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(ct);
-
-                return Result<List<ProductNameDto>>.Success(ProductNames);
-
+                output.Add(new ()
+                {
+                    Name = ProductName.Name,
+                    Slug = ProductName.Slug,
+                    Description = ProductName.Description,
+                    Price = ProductName.Price,
+                    Tags = ProductName.Tags,
+                });
             }
+
+            return Result<List<AddProductNameDto>>.Success(output);
+
         }
     }
+
 }

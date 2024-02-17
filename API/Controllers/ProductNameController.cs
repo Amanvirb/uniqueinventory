@@ -18,9 +18,11 @@ public class ProductNameController : BaseApiController
 
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetProductNameList()
+    //public async Task<IActionResult> GetProductNameList()
+    public async Task<IActionResult> GetProductNameList([FromQuery] ProductNameSearchParams searchParams)
+
     {
-        return HandleResult(await Mediator.Send(new ProductNameList.Query()));
+        return HandleResult(await Mediator.Send(new ProductNameList.Query { Params= searchParams}));
     }
 
     [AllowAnonymous]

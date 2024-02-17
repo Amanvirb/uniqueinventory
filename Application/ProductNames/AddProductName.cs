@@ -1,6 +1,9 @@
 ﻿using Application.Locations;
 using Application.ProductNames.Dtoæ;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace Application.ProductNames;
 public class AddProductName
@@ -22,13 +25,24 @@ public class AddProductName
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken ct)
         {
-            var name = request.Product.Name.Trim().ToUpper();
+            string newName = request.Product.Name.Trim().ToUpper();
 
-            var existingProductName = await _context.ProductNames.FirstOrDefaultAsync(x => x.Name == name, ct);
+            ProductName newProductName = new ProductName
+            {
+                Name = newName,
+                Slug = request.Product.Slug,
+                Description = request.Product.Description,
+                Price = request.Product.Price,
+                Tags = request.Product.Tags,
+            };
+
+
+            var existingProductName = await _context.ProductNames.FirstOrDefaultAsync(x => x.Name == newName, ct);
 
             if (existingProductName is not null) return Result<Unit>.Failure("Product Name already exists");
 
-            _context.ProductNames.Add(new ProductName { Name = name});
+
+            _context.ProductNames.Add(newProductName);
 
             var result = await _context.SaveChangesAsync(ct) > 0;
             if (!result) return Result<Unit>.Failure("Cannot Add Product Name");

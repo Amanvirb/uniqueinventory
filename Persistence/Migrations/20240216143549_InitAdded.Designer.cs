@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240205100813_InitAdded")]
+    [Migration("20240216143549_InitAdded")]
     partial class InitAdded
     {
         /// <inheritdoc />
