@@ -13,18 +13,21 @@ public class LocationController : BaseApiController
         return HandleResult(await Mediator.Send(new CreateLocation.Command { Location = location }));
     }
 
+    [AllowAnonymous]
     [HttpGet] 
     public async Task<IActionResult> GetLocationList()
     {
         return HandleResult(await Mediator.Send(new LocationList.Query()));
     }
 
+    [AllowAnonymous]
     [HttpGet("{name}")] 
     public async Task<IActionResult> GetLocationDetail(string name)
     {
         return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
+    [AllowAnonymous]
     [HttpPut] 
     public async Task<IActionResult> UpdateLocation(CommonDto location)
     {
