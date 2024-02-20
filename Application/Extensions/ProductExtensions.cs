@@ -18,7 +18,7 @@ public static class ProductExtensions
     {
         if (!string.IsNullOrEmpty(Params.SerialNo))
         {
-            query = query.Where(p => p.SerialNumber == Params.SerialNo.Trim().ToUpper());
+            query = query.Where(p => p.SerialNumber.Contains(Params.SerialNo));
             return query;
         }
         if (!string.IsNullOrEmpty(Params.ProductName) && !string.IsNullOrEmpty(Params.Location))

@@ -1,3 +1,5 @@
+
+using Application.RequestHelpers;
 using System.Text.Json;
 
 namespace API.Extensions;
@@ -14,7 +16,8 @@ public static class HttpExtensions
             totalItems,
             totalPages
         };
+        //JsonSerializerOptions options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         response.Headers.Append("Pagination", JsonSerializer.Serialize(paginationHeader));
-        response.Headers.Append("Access-Control-Expose-Headers","Pagination");
-     }
+        response.Headers.Append("Access-Control-Expose-Headers", "Pagination");
+    }
 }

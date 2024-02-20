@@ -22,7 +22,7 @@ public static class ApplicationServiceExtensions
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()
-                .WithExposedHeaders("WWW-Authenticate")
+                .WithExposedHeaders("WWW-Authenticate", "Pagination")
                 .WithOrigins("http://localhost:3000", "http://localhost:3001", "https://localhost:3000");
             });
         });
