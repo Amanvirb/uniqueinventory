@@ -61,8 +61,8 @@ public class SearchProduct
                     Products = searchedProductsName
                 });
             }
-            return Result<List<ProductSearchDto>>.Success(output);
 
+            return Result<List<ProductSearchDto>>.Success(output);
         }
     }
 }

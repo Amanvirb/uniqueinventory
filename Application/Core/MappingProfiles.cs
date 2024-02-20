@@ -1,4 +1,5 @@
 using Application.Orders;
+using Application.ProductNames.Dtoæ;
 
 namespace Application.Core;
 
@@ -11,6 +12,7 @@ public class MappingProfiles : Profile
              .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ProductName.Name));
 
         CreateMap<Location, LocationDto>();
+        CreateMap<ProductName, AddProductNameDto>();
 
         CreateMap<Location, CommonDto>()
             .ForMember(d => d.Name, o => o.MapFrom(s => s.Name));

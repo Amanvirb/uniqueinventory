@@ -1,4 +1,6 @@
-﻿namespace Application.Extensions;
+﻿using Application.ProductNames.Dtoæ;
+
+namespace Application.Extensions;
 public static class ProductExtensions
 {
     public static IQueryable<ProductNameDto> Sort(this IQueryable<ProductNameDto> query, string orderBy)
@@ -33,7 +35,7 @@ public static class ProductExtensions
 
         return query;
     }
-    public static IQueryable<ProductName> SearchProductName(this IQueryable<ProductName> query, ProductNameSearchParams Params)
+    public static IQueryable<AddProductNameDto> SearchProductName(this IQueryable<AddProductNameDto> query, ProductNameSearchParams Params)
     {
         if (!string.IsNullOrEmpty(Params.ProductName))
         {

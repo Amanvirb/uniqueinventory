@@ -14,7 +14,7 @@ public class ProductNameCustomerController : BaseApiController
     public async Task<IActionResult> GetProductNameList([FromQuery] ProductNameSearchParams searchParams)
 
     {
-        return HandleResult(await Mediator.Send(new ProductNameList.Query { Params= searchParams}));
+        return HandlePagedResult(await Mediator.Send(new ProductNameList.Query { Params= searchParams}));
     }
 
     [AllowAnonymous]
