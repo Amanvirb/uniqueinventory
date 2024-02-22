@@ -8,4 +8,5 @@ public class UserDto
     public string AccessToken { get; set; }
     public string TokenType { get; set; } = "Bearer";
     public string OrderId { get; set; }
+    public List<string> Roles { get; set; } = [];
 }
