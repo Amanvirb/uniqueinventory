@@ -5,13 +5,15 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace API.Controllers
 {
-    public class AccountController(UserManager<AppUser> userManager, TokenService tokenService) : BaseApiController
+    public class AccountController(UserManager<AppUser> userManager, TokenService tokenService, DataContext context) : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly TokenService _tokenService = tokenService;
+        private readonly DataContext _context = context;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -68,7 +70,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("CurrentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.Users
@@ -110,6 +112,7 @@ namespace API.Controllers
         {
             var userClaims = await _userManager.GetClaimsAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
+          
 
             return new UserDto
             {
@@ -117,8 +120,20 @@ namespace API.Controllers
                 AccessToken = _tokenService.CreateToken(user, userClaims, roles),
                 Username = user.UserName,
                 OrderId = user.Orders.FirstOrDefault(x => !x.Confirmed)?.OrderId,
+                Roles = GetRoles(roles),
             };
         }
+
+        private List<string> GetRoles(IList<string> roles)
+        {
+            List<string> output = [];
+            foreach (var role in roles)
+            {
+                output.Add(role);
+            }
+            return output;
+        }
+
         private async Task SetRefreshToken(AppUser user)
         {
             var refreshToken = _tokenService.GenerateRefreshToken();
@@ -133,6 +148,20 @@ namespace API.Controllers
             };
 
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+        }
+
+        private async Task<Order> RetrieveOrder(string orderId)
+        {
+            //if (string.IsNullOrEmpty(buyerId))
+            //{
+            //    Response.Cookies.Delete("buyerId");
+            //    return null;
+            //}
+
+            return await _context.Orders
+                .Include(x => x.AppUser)
+                .Include(x => x.OrderDetails)
+                .FirstOrDefaultAsync(order => order.OrderId==orderId);
         }
 
     }
