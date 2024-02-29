@@ -22,7 +22,7 @@ public class AutoProductController : BaseApiController
     //}
 
     [HttpPost("AddProducts")]
-    public async Task<IActionResult> AddProducts(List<ProductDto> products)
+    public async Task<IActionResult> AddProducts(List<ProductDetailDto> products)
     {
         foreach (var product in products)
         {
@@ -34,7 +34,7 @@ public class AutoProductController : BaseApiController
     }
 
     [HttpGet]
-    public List<ProductDto> GenerateProduct()
+    public List<ProductDetailDto> GenerateProduct()
     {
         return GenerateAutoProduct();
 
@@ -54,11 +54,11 @@ public class AutoProductController : BaseApiController
         return Ok();
     }
 
-    private List<ProductDto> GenerateAutoProduct()
+    private List<ProductDetailDto> GenerateAutoProduct()
     {
         Random rnd = new();
 
-        var output = new List<ProductDto>();
+        var output = new List<ProductDetailDto>();
         for (int i = 1; i < 501; i++)
         {
             output.Add(new()

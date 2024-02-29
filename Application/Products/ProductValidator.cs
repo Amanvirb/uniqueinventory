@@ -2,7 +2,7 @@
 
 namespace Application.Products;
 
-public class ProductValidator : AbstractValidator<ProductDto>
+public class ProductValidator : AbstractValidator<ProductDetailDto>
 {
     public ProductValidator()
     {

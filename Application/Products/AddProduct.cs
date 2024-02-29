@@ -6,7 +6,7 @@ public class AddProduct
 {
     public class AddProductCommand : IRequest<Result<Unit>>
     {
-        public ProductDto Product { get; set; }
+        public ProductDetailDto Product { get; set; }
     }
 
     public class CommandValidator : AbstractValidator<AddProductCommand>

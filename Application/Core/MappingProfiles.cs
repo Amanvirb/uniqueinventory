@@ -7,9 +7,11 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<Product, ProductDto>()
+        CreateMap<Product, ProductDetailDto>()
              .ForMember(d => d.LocationName, o => o.MapFrom(s => s.Location.Name))
              .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ProductName.Name));
+
+        CreateMap<ProductName, ProductNameDetailDto>();
 
         CreateMap<Location, LocationDto>();
         CreateMap<ProductName, AddProductNameDto>();
