@@ -9,7 +9,7 @@ public class ProductWHController : BaseApiController
     //[Authorize(Roles = "SuperAdmin")]
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> AddProduct(ProductDto product)
+    public async Task<IActionResult> AddProduct(ProductDetailDto product)
     {
         return HandleResult(await Mediator.Send(new AddProduct.AddProductCommand { Product = product }));
     }
