@@ -38,10 +38,10 @@ public class ProductWHController : BaseApiController
     }
 
     [AllowAnonymous]
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductDetail(int id)
+    [HttpGet("{serialNo}")]
+    public async Task<IActionResult> GetProductDetail(string serialNo)
     {
-        return HandleResult(await Mediator.Send(new ProductDetail.Query { Id = id }));
+        return HandleResult(await Mediator.Send(new ProductDetail.Query { SerialNo = serialNo }));
     }
 
     [Authorize(Roles = "SuperAdmin")]

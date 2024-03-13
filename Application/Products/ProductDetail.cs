@@ -4,32 +4,31 @@ namespace Application.Products;
 
 public class ProductDetail
 {
-    public class Query : IRequest<Result<ProductNameDetailDto>>
+    public class Query : IRequest<Result<ProductDetailDto>>
     {
-        public int Id { get; set; }
+        public string SerialNo { get; set; }
     }
     public class CommandValidator : AbstractValidator<Query>
     {
         public CommandValidator()
         {
-            RuleFor(x => x.Id).NotEmpty();
+            RuleFor(x => x.SerialNo).NotEmpty();
         }
     }
-    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<ProductNameDetailDto>>
+    public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<ProductDetailDto>>
     {
         private readonly DataContext _context = context;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<Result<ProductNameDetailDto>> Handle(Query request, CancellationToken ct)
+        public async Task<Result<ProductDetailDto>> Handle(Query request, CancellationToken ct)
         {
-            var product = await _context.ProductNames
-                .Include(x => x.Products)
-                .ProjectTo<ProductNameDetailDto>(_mapper.ConfigurationProvider)
-                 .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
+            var product = await _context.Products
+                .ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider)
+                 .FirstOrDefaultAsync(x => x.SerialNumber == request.SerialNo, ct);
 
-            if (product is null) return Result<ProductNameDetailDto>.Failure("Product not found");
+            if (product is null) return Result<ProductDetailDto>.Failure("Product not found");
 
-            return Result<ProductNameDetailDto>.Success(product);
+            return Result<ProductDetailDto>.Success(product);
         }
     }
 }
