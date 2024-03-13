@@ -7,34 +7,34 @@ namespace API.Controllers;
 public class LocationController : BaseApiController
 {
     [AllowAnonymous]
-    [HttpPost] 
+    [HttpPost]
     public async Task<IActionResult> CreateLocation(AddLocationDto location)
     {
         return HandleResult(await Mediator.Send(new CreateLocation.Command { Location = location }));
     }
 
     [AllowAnonymous]
-    [HttpGet] 
+    [HttpGet]
     public async Task<IActionResult> GetLocationList()
     {
         return HandleResult(await Mediator.Send(new LocationList.Query()));
     }
 
     [AllowAnonymous]
-    [HttpGet("{name}")] 
+    [HttpGet("{name}")]
     public async Task<IActionResult> GetLocationDetail(string name)
     {
         return HandleResult(await Mediator.Send(new LocationDetail.Query { Name = name }));
     }
 
     [AllowAnonymous]
-    [HttpPut] 
+    [HttpPut]
     public async Task<IActionResult> UpdateLocation(CommonDto location)
     {
-        return HandleResult(await Mediator.Send(new EditLocation.Command {Location = location }));
+        return HandleResult(await Mediator.Send(new EditLocation.Command { Location = location }));
     }
 
-    [HttpDelete("{id}")] 
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteLocation(int id)
     {
         return HandleResult(await Mediator.Send(new DeleteLocation.Command { Id = id }));

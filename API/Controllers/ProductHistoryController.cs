@@ -14,10 +14,10 @@ public class ProductHistoryController : BaseApiController
     }
 
     [AllowAnonymous]
-    [HttpGet("serialNumber")]
-    public async Task<IActionResult> GetSerialNumberHistory()
+    [HttpGet("{serialNumber}")]
+    public async Task<IActionResult> GetSerialNumberHistory(string serialNumber)
     {
-        return HandleResult(await Mediator.Send(new GetSerialNumberHistory.Query()));
+        return HandleResult(await Mediator.Send(new GetSerialNumberHistory.Query { SerialNumber = serialNumber }));
     }
 
 
