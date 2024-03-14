@@ -3,7 +3,7 @@ public class ProductNameDetail
 {
     public class Query : IRequest<Result<ProductNameDto>>
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
     }
     public class Handler(DataContext context, IMapper mapper) : IRequestHandler<Query, Result<ProductNameDto>>
     {
@@ -15,7 +15,7 @@ public class ProductNameDetail
             var product = await _context.ProductNames
                 .Include(x => x.Products)
                 .ProjectTo<ProductNameDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.Name == request.Name, ct);
+                .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
 
             if (product is null) return Result<ProductNameDto>.Failure("Produt does not exist");
 

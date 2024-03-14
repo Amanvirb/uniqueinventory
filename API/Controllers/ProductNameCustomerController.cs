@@ -18,10 +18,10 @@ public class ProductNameCustomerController : BaseApiController
     }
 
     [AllowAnonymous]
-    [HttpGet("{name}")]
-    public async Task<IActionResult> GetProductNameDetail(string name)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProductNameDetail(int id)
     {
-        return HandleResult(await Mediator.Send(new ProductNameDetail.Query { Name = name }));
+        return HandleResult(await Mediator.Send(new ProductNameDetail.Query { Id = id }));
     }
 
    
