@@ -29,9 +29,9 @@ public class SearchProduct
 
             var productNames = products.Select(x => x.ProductName.Name).Distinct().ToList();
 
-            foreach (var ProductName in productNames)
+            foreach (var productName in productNames)
             {
-                var selectedProducts = products.Where(x => x.ProductName.Name == ProductName).ToList();
+                var selectedProducts = products.Where(x => x.ProductName.Name == productName).ToList();
 
                 var selectedLocations = selectedProducts.Select(x => x.Location.Name).Distinct().ToList();
                
@@ -50,14 +50,17 @@ public class SearchProduct
                     searchedProductsName.Add(new()
                     {
                         Location = location,
-                        Quantity = serials.Count(),
+                        Quantity = serials.Count,
                         SerialNumbers = serials,
                     });
                 }
 
+                int prodNameId = products.FirstOrDefault(x => x.ProductName.Name == productName).Id;
+
                 output.Add(new()
                 {
-                    ProductName = ProductName,
+                    Id = prodNameId,
+                    ProductName = productName,
                     Products = searchedProductsName
                 });
             }

@@ -44,21 +44,24 @@ public class ProductWHController : BaseApiController
         return HandleResult(await Mediator.Send(new ProductDetail.Query { SerialNo = serialNo }));
     }
 
-    [Authorize(Roles = "SuperAdmin")]
+    //[Authorize(Roles = "SuperAdmin")]
+    [AllowAnonymous]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         return HandleResult(await Mediator.Send(new DeleteProduct.Command { Id = id }));
     }
 
-    [Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    [AllowAnonymous]
     [HttpPut]
     public async Task<IActionResult> UpdateProductNameDetail(AddProductNameDto product)
     {
         return HandleResult(await Mediator.Send(new EditProductName.Command { Product = product }));
     }
 
-    [Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
+    [AllowAnonymous]
     [HttpDelete("productname{id}")]
     public async Task<IActionResult> DeleteProductName(int id)
     {

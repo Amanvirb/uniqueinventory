@@ -27,7 +27,7 @@ public class AddProductName
         {
             string newName = request.Product.Name.Trim().ToUpper();
 
-            ProductName newProductName = new ProductName
+            ProductName newProductName = new()
             {
                 Name = newName,
                 Slug = request.Product.Slug,

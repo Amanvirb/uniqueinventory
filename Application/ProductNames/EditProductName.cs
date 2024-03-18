@@ -31,12 +31,27 @@ public class EditProductName
 
             if (dbProduct is null) return Result<Unit>.Failure("Product name does not exist, please enter valid product");
 
-            if (dbProduct.Name == request.Product.Name)
-                return Result<Unit>.Failure("Entered product name is same as previous");
+            //if (dbProduct.Name == request.Product.Name)
+            //    return Result<Unit>.Failure("Entered product name is same as previous");
 
-            result = await _context.ProductNames
-                .Where(x => x.Id == request.Product.Id)
-                .ExecuteUpdateAsync(x => x.SetProperty(p => p.Name, request.Product.Name), ct) > 0;
+            if (dbProduct.Name != request.Product.Name ||
+                dbProduct.Description != request.Product.Description ||
+                dbProduct.Price != request.Product.Price ||
+                dbProduct.Tags != request.Product.Tags
+                )
+            {
+                dbProduct.Name = request.Product.Name;
+                dbProduct.Description = request.Product.Description;
+                dbProduct.Price = request.Product.Price;
+                dbProduct.Tags = request.Product.Tags;
+            }
+            else
+            {
+                return Result<Unit>.Failure("Entered product details are same as previous");
+            }
+
+            _context.Entry(dbProduct).State = EntityState.Modified;
+            result = await _context.SaveChangesAsync(ct) > 0;
 
             if (!result) return Result<Unit>.Failure("Failed to update Product name");
 
