@@ -15,7 +15,7 @@ public class DeleteProduct
                 .Where(x => x.SerialNumber == request.SerialNo)
                 .ExecuteDeleteAsync(ct) > 0;
 
-           if (!result) return Result<Unit>.Failure("Failed to Delete Product");
+            if (!result) return Result<Unit>.Failure("Failed to Delete Product");
             return Result<Unit>.Success(Unit.Value);
         }
     }

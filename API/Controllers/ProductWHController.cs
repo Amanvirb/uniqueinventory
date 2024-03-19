@@ -45,12 +45,12 @@ public class ProductWHController : BaseApiController
     }
 
     //[Authorize(Roles = "SuperAdmin")]
-    //[AllowAnonymous]
-    //[HttpDelete("{serialNo}")]
-    //public async Task<IActionResult> DeleteProduct(int serialNo)
-    //{
-    //    return HandleResult(await Mediator.Send(new DeleteProduct.Command { SerialNo = serialNo }));
-    //}
+    [AllowAnonymous]
+    [HttpDelete("{serialNo}")]
+    public async Task<IActionResult> DeleteProduct(string serialNo)
+    {
+        return HandleResult(await Mediator.Send(new DeleteProduct.Command { SerialNo = serialNo }));
+    }
 
     //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
     [AllowAnonymous]
@@ -61,10 +61,10 @@ public class ProductWHController : BaseApiController
     }
 
     //[Authorize(Roles = "SuperAdmin,Admin,Employee")]
-    [AllowAnonymous]
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProductName(int id)
-    {
-        return HandleResult(await Mediator.Send(new DeleteProductName.Command { Id = id }));
-    }
+    //[AllowAnonymous]
+    //[HttpDelete("productname/{id}")]
+    //public async Task<IActionResult> DeleteProductName(int id)
+    //{
+    //    return HandleResult(await Mediator.Send(new DeleteProductName.Command { Id = id }));
+    //}
 }
